@@ -11,6 +11,9 @@
     ../../modules/networking.nix
     ../../modules/desktop.nix
     ../../modules/packages.nix
+    ../../modules/virtualization.nix
+    ../../modules/cockpit-extensions.nix
+    ../../modules/archisteamfarm.nix
     
     # Users
     ../../users/aurelius.nix

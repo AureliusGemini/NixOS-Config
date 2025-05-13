@@ -21,6 +21,7 @@
     # Applications
     discord
     virtualbox
+    steam
     
     # Cockpit dependencies
     sscg

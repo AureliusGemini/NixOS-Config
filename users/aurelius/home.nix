@@ -21,6 +21,9 @@
     
     # Applications
     firefox
+    steam
+    # ArchiSteamFarm (manual install, .NET runtime)
+    dotnet-runtime
   ];
 
   # Configure Git

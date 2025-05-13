@@ -1,0 +1,40 @@
+# Virtualization module for NixOS (Proxmox alternative, ext4 only)
+{ config, lib, pkgs, ... }:
+
+{
+  # Enable KVM/QEMU virtualization
+  virtualisation.libvirtd = {
+    enable = true;
+    qemuPackage = pkgs.qemu_kvm;
+    qemuRunAsRoot = false;
+    onBoot = "ignore";
+    onShutdown = "shutdown";
+  };
+  users.groups.libvirtd.members = [ "aurelius" ];
+
+  # Enable LXD (LXC alternative)
+  virtualisation.lxd = {
+    enable = true;
+    recommendedSysctlSettings = true;
+  };
+  users.groups.lxd.members = [ "aurelius" ];
+
+  # Enable Docker
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = true;
+    storageDriver = "overlay2";
+  };
+  users.groups.docker.members = [ "aurelius" ];
+
+  # Enable Podman
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    defaultNetwork.settings.dns_enabled = true;
+  };
+  users.groups.podman.members = [ "aurelius" ];
+
+  # Optional: Enable virt-manager for GUI management
+  environment.systemPackages = with pkgs; [ virt-manager ];
+}
