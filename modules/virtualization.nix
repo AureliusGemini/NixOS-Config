@@ -19,15 +19,8 @@
   };
   users.groups.lxd.members = [ "aurelius" ];
 
-  # Enable Docker
-  virtualisation.docker = {
-    enable = true;
-    enableOnBoot = true;
-    storageDriver = "overlay2";
-  };
-  users.groups.docker.members = [ "aurelius" ];
-
-  # Enable Podman
+  # Enable Podman with Docker compatibility
+  virtualisation.docker.enable = false;
   virtualisation.podman = {
     enable = true;
     dockerCompat = true;
