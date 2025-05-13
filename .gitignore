@@ -1,0 +1,10 @@
+# Ignore secrets and private keys
+/ssl/
+/ssh/
+*.key
+*.crt
+*.pem
+*.bak
+*.swp
+*.swo
+*.lock
