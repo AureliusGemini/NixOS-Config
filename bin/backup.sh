@@ -5,12 +5,11 @@
 set -euo pipefail
 cd /etc/nixos
 
-git pull --rebase
 if [[ -n $(git status --porcelain) ]]; then
   git add -A
   git commit -m "Auto-backup: $(date '+%Y-%m-%d %H:%M:%S')"
-  # Push to personal GitHub backup repo using github.com-ag alias only
-  git push git@github.com-ag:AureliusGemini/NixOS-Config master
-else
-  echo "No changes to commit."
 fi
+
+git pull --rebase
+
+git push git@github.com-ag:AureliusGemini/NixOS-Config master

@@ -31,4 +31,14 @@
       ExecStart = [ "${pkgs.ethtool}/bin/ethtool -K enp4s0 gro on" ];
     };
   };
+
+  # Wake-on-LAN (WOL) enable on enp4s0
+  systemd.services."ethtool-wol" = {
+    description = "Enable Wake-on-LAN on enp4s0";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = [ "${pkgs.ethtool}/bin/ethtool -s enp4s0 wol g" ];
+    };
+  };
 }
