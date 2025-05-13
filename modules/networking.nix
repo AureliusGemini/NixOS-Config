@@ -9,12 +9,12 @@
     
     # IP forwarding
     firewall.enable = false;
-    
-    # IP forwarding for Tailscale
-    kernel.sysctl = {
-      "net.ipv4.ip_forward" = "1";
-      "net.ipv6.conf.all.forwarding" = "1";
-    };
+  };
+
+  # IP forwarding for Tailscale
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = "1";
+    "net.ipv6.conf.all.forwarding" = "1";
   };
 
   # Tailscale

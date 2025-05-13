@@ -11,7 +11,6 @@
     ../../modules/networking.nix
     ../../modules/desktop.nix
     ../../modules/packages.nix
-    ../../modules/cockpit.nix
     
     # Users
     ../../users/aurelius.nix
