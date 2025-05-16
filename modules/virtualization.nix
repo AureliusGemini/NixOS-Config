@@ -2,6 +2,9 @@
 { config, lib, pkgs, ... }:
 
 {
+  # Enable VirtualBox
+  virtualisation.virtualbox.host.enable = true;
+
   # Enable KVM/QEMU virtualization
   virtualisation.libvirtd = {
     enable = true;

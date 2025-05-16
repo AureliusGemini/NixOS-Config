@@ -25,5 +25,9 @@
     
     # Cockpit dependencies
     sscg
+
+    remmina         # GUI RDP client, works on X11 and Wayland
+    freerdp         # Command-line RDP client (xfreerdp)
+
   ];
 }

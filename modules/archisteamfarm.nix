@@ -4,7 +4,7 @@
 {
   services.archisteamfarm = {
     enable = true;
-    dataDir = "/opt/ArchiSteamFarm";
+    # dataDir = "/opt/ArchiSteamFarm";
     web-ui.enable = true;
     # Bots and settings will be loaded from the config files in dataDir/config/
   };
