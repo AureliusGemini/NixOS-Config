@@ -43,9 +43,4 @@
     pulse.enable = true;
   };
 
-#   xdg.portal = {
-#     enable = true;
-#     extraPortals = [ "xdg-desktop-portal-kde" ];
-#   };
-
 }
