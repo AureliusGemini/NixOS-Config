@@ -4,10 +4,24 @@
 {
   # Enable the X11 windowing system
   services.xserver.enable = true;
+  services.xserver.displayManager.sddm.enable = true;
+#   services.xserver.desktopManager.plasma5.enable = true;
+
+  services.xrdp.enable = true;
+  services.xrdp.defaultWindowManager = "startplasma-x11";
+#   networking.firewall.allowedTCPPorts = [ 3389 ];
+
 
   # Enable the KDE Plasma Desktop Environment
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
+
+  systemd.services.xrdp = {
+    enable = true;
+    serviceConfig.ExecStart = lib.mkForce "";
+  };
+
+
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -25,6 +39,13 @@
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
+    audio.enable = true;
     pulse.enable = true;
   };
+
+#   xdg.portal = {
+#     enable = true;
+#     extraPortals = [ "xdg-desktop-portal-kde" ];
+#   };
+
 }
