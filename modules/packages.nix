@@ -21,6 +21,7 @@
     # Applications
     discord
     steam
+    zoom-us
     
     # Cockpit dependencies
     sscg

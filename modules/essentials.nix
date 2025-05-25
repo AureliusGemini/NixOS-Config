@@ -36,6 +36,5 @@
   # Enable Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Blacklist for KVM kernel modules (for AMD CPUs) 
-  boot.blacklistedKernelModules = [ "kvm" "kvm_amd" ];
+  boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
 }
