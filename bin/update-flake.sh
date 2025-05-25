@@ -8,7 +8,7 @@ cd /etc/nixos
 echo "[Updating flake inputs...]"
 nix flake update
 
-echo "Rebuilding NixOS system..."
+echo "[Rebuilding NixOS system...]"
 nixos-rebuild switch --flake .#nixos
 
 # Optionally, auto-backup after update
