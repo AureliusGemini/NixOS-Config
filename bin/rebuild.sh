@@ -5,7 +5,7 @@
 set -euo pipefail
 cd /etc/nixos
 
-echo "Rebuilding NixOS system..."
+echo "[Rebuilding NixOS system...]"
 nixos-rebuild switch --flake .#nixos
 
-echo "NixOS rebuild complete."
+echo "[NixOS rebuild complete.]"
