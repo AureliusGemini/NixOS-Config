@@ -6,6 +6,7 @@
   programs = {
     firefox.enable = true;
     nix-ld.enable = true;
+    direnv.enable = true;
   };
 
   # System packages
