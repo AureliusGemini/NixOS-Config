@@ -8,7 +8,7 @@
     ports = [ 22 ];          # Define the ports to listen on
     settings = {
       PasswordAuthentication = false;  # Disable password authentication for better security
-      PermitRootLogin = "no";           # Disallow root login
+      PermitRootLogin = "yes";
 
       KexAlgorithms = [
         # "[email protected]"
