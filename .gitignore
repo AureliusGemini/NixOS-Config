@@ -1,0 +1,11 @@
+# Ignore local secrets or test files
+secrets.nix
+*.swp
+*.bak
+result
+result-*
+
+# Nix build garbage
+*.drv
+*.lock
+.cache/
