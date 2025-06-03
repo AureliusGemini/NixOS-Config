@@ -7,7 +7,7 @@
     package = pkgs.openssh;  # Specify the OpenSSH package to use
     ports = [ 22 ];          # Define the ports to listen on
     settings = {
-      PasswordAuthentication = false;  # Disable password authentication for better security
+#       PasswordAuthentication = false;  # Disable password authentication for better security
       PermitRootLogin = "yes";
 
       KexAlgorithms = [
