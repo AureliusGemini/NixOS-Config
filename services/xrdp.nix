@@ -18,7 +18,7 @@
     # sslCert = "/etc/xrdp/cert.pem";
 
     # Firewall
-    # openFirewall = true;
+    openFirewall = true;
 
     # Optional configuration
     # extraConfDirCommands = ''
