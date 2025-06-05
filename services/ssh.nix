@@ -36,8 +36,8 @@
       ];  # Set secure MACs
 
       LogLevel = "VERBOSE";          # Enable verbose logging
-      AllowTcpForwarding = false;    # Disable TCP forwarding
-      AllowAgentForwarding = false;  # Disable agent forwarding
+      AllowTcpForwarding = true;     # Disable TCP forwarding
+      AllowAgentForwarding = true;   # Disable agent forwarding
       MaxAuthTries = 3;              # Limit the number of authentication attempts
       MaxSessions = 2;               # Limit the number of open sessions
       TCPKeepAlive = false;          # Disable TCP keep-alive
