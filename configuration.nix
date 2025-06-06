@@ -34,4 +34,7 @@
     ./networking/firewall.nix
     ./systemd/services/ethtool-wol.nix
   ];
+
+  services.flatpak.enable = true;
+
 }
