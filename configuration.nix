@@ -11,6 +11,7 @@
     gnutar # cuz "tar" doesn't exist
     unzip
     which
+    gsmartcontrol
     # and possibly:
     nodejs
     python3
