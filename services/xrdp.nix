@@ -4,13 +4,12 @@
 {
   services.xrdp = {
     enable = true;
-    # package = pkgs.xrdp;
-    # port = 3389;
+    package = pkgs.xrdp;
 
     # Audio support
     audio = {
-      enable = false;
-      # package = pkgs.pulseaudio;
+      enable = true;
+      package = pkgs.pulseaudio;
     };
 
     # SSL configuration
@@ -18,12 +17,18 @@
     # sslCert = "/etc/xrdp/cert.pem";
 
     # Firewall
+    # port = 3389;
     openFirewall = true;
 
     # Optional configuration
     # extraConfDirCommands = ''
     #   echo "Custom config" > /etc/xrdp/custom.conf
     # '';
-    # defaultWindowManager = "startxfce4";
+    defaultWindowManager = "${pkgs.kdePackages.plasma-workspace}/bin/startplasma-x11"; # or "startxfce4";
   };
+    environment.systemPackages = with pkgs; [
+    kdePackages.krdp
+    kdePackages.plasma-workspace
+    xrdp
+  ];
 }
