@@ -26,9 +26,21 @@
     # '';
     defaultWindowManager = "${pkgs.kdePackages.plasma-workspace}/bin/startplasma-x11"; # or "startxfce4";
   };
-    environment.systemPackages = with pkgs; [
+  
+  services.xserver = {
+    enable = true;
+    displayManager.sddm.enable = true;
+  };
+
+  environment.systemPackages = with pkgs; [
     kdePackages.krdp
     kdePackages.plasma-workspace
     xrdp
   ];
+
+  # security.pam.services.xrdp = {
+  #   auth = [ { sufficient = "pam_unix.so"; } ];
+  #   session = [ { required = "pam_systemd.so"; } ];
+  # };
+  
 }
