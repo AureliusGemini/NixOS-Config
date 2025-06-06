@@ -2,11 +2,15 @@
 { config, pkgs, lib, ... }:
 
 {
-  services.xserver.enable = true;
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  services.xrdp = {
+    enable = true;
+    defaultWindowManager = "plasma";
+  };
+  # services.xrdp-sesman.enable = true;
 
-  services.xrdp.enable = true;
-  services.xrdp.defaultWindowManager = "startplasma-x11";
-  services.xrdp.openFirewall = true;
+  services = {
+    xserver.enable = true;
+    desktopManager.plasma6.enable = true;
+    displayManager.sddm.enable = true;
+  };
 }
