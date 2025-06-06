@@ -31,7 +31,7 @@
         # stunPort = 3478;
         # package = pkgs.tailscale;
         # verifyClients = true;
-        # openFirewall = true;
+        openFirewall = true;
       };
 
       # Extra flags
@@ -46,6 +46,16 @@
       # user = "nobody";
       # group = "nogroup";
       # package = pkgs.tailscale;
+    };
+  };
+
+  # UDP GRO for network performance
+  systemd.services."ethtool-gro" = {
+    description = "Enable UDP GRO Forwarding on enp4s0";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = [ "${pkgs.ethtool}/bin/ethtool -K enp4s0 gro on" ];
     };
   };
 }

@@ -32,6 +32,7 @@
 
     # Networking
     ./networking/firewall.nix
+    ./systemd/services/ethtool-wol.nix
   ];
 
 }
