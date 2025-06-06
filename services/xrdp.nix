@@ -24,7 +24,7 @@
     # extraConfDirCommands = ''
     #   echo "Custom config" > /etc/xrdp/custom.conf
     # '';
-    defaultWindowManager = "${pkgs.kdePackages.plasma-workspace}/bin/startplasma-x11"; # or "startxfce4";
+    defaultWindowManager = "${pkgs.kdePackages.krdp}/bin/startplasma-x11";  
   };
   
   services.displayManager.sddm.enable = true;
@@ -36,9 +36,4 @@
     xrdp
   ];
 
-  # security.pam.services.xrdp = {
-  #   auth = [ { sufficient = "pam_unix.so"; } ];
-  #   session = [ { required = "pam_systemd.so"; } ];
-  # };
-  
 }
