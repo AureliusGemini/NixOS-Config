@@ -24,7 +24,7 @@
     # extraConfDirCommands = ''
     #   echo "Custom config" > /etc/xrdp/custom.conf
     # '';
-    defaultWindowManager = "${pkgs.kdePackages.krdp}/bin/startplasma-x11";  
+    defaultWindowManager = "startplasma-x11";  
   };
   
   services.displayManager.sddm.enable = true;
