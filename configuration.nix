@@ -10,11 +10,13 @@
     git
     gnutar # cuz "tar" doesn't exist
     unzip
+    oh-my-posh
     which
     gsmartcontrol
     # and possibly:
     nodejs
     python3
+    tailscale-systray
   ];
 
   # Options
@@ -30,6 +32,7 @@
 
     # Programs
     ./programs/nix-ld.nix
+    ./minecraft-server.nix 
 
     # Networking
     ./networking/firewall.nix
