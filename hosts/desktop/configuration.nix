@@ -62,6 +62,7 @@
 
     (wrapOBS {
       plugins = with obs-studio-plugins; [
+        obs-aitum-multistream
         wlrobs
         obs-vaapi
         obs-vkcapture
