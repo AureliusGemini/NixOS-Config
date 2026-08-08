@@ -10,12 +10,12 @@
 
   networking.networkmanager = {
     enable = true;
-    extraConfig = "
+    extraConfig = ''
       [connectivity]
       # Uses Cloudflare's ultra-fast local edge (SG/Jakarta POP)
       uri=http://cp.cloudflare.com/generate_204
       interval=5
-      ";
+      '';
     };
   networking.hostName = "nixos";
 
