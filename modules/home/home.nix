@@ -4,6 +4,11 @@
   home.username = "aurelius";
   home.homeDirectory = "/home/aurelius";
 
+  home.sessionVariables = {
+    # This forces all launchers to look at Steam's custom tool folder
+    STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${config.home.homeDirectory}/.steam/root/compatibilitytools.d";
+  };
+
   home.packages = with pkgs; [
     (discord.override { withVencord = true; })
     kdePackages.plasma-browser-integration
@@ -14,7 +19,7 @@
     heroic
     faugus-launcher
 
-    modrinth-app
+#     modrinth-app
 
     opencode-desktop
 
