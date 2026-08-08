@@ -12,7 +12,7 @@
     enable = true;
     settings = {
       connectivity = {
-        uri = "http://cp.cloudflare.com/generate_204";
+        uri = "http://networkcheck.kde.org";
         interval = 5;
       };
     };
