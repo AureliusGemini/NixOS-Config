@@ -14,6 +14,8 @@
     heroic
     faugus-launcher
 
+    modrinth-app
+
     opencode-desktop
 
     nixd
