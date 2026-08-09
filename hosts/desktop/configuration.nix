@@ -50,7 +50,6 @@
   hardware.steam-hardware.enable = true;
 
   programs.droidcam.enable = true;
-  programs.adb.enable = true;
 
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
@@ -82,6 +81,7 @@
     wget
     kdePackages.plasma-integration
     waydroid-helper
+    android-tools
 
     # --- Gaming Tools & Utilities ---
     vulkan-tools
