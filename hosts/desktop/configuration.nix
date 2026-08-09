@@ -50,6 +50,7 @@
   hardware.steam-hardware.enable = true;
 
   programs.droidcam.enable = true;
+  programs.adb.enable = true;
 
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
@@ -63,7 +64,7 @@
   security.sudo.wheelNeedsPassword = false;
   users.users.aurelius = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "wheel" "networkmanager""adbusers" ];
     description = "AureliusGemini";
   };
 
