@@ -32,14 +32,14 @@
     };
   };
 
-  security.rtkit.enable = true;
-
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
+#   security.rtkit.enable = true;
+#
+#   services.pipewire = {
+#     enable = true;
+#     alsa.enable = true;
+#     alsa.support32Bit = true;
+#     pulse.enable = true;
+#   };
 
   programs.gamemode.enable = true;
   programs.steam = {
@@ -112,13 +112,13 @@
     ];
   };
 
-  boot = {
-    extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
-    kernelModules = [ "v4l2loopback" "snd_aloop" ];
-    extraModprobeConfig = ''
-      options v4l2loopback exclusive_caps=1 card_label="DroidCam Video"
-    '';
-  };
+#   boot = {
+#     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+#     kernelModules = [ "v4l2loopback" "snd_aloop" ];
+#     extraModprobeConfig = ''
+#       options v4l2loopback exclusive_caps=1 card_label="DroidCam Video"
+#     '';
+#   };
 
   virtualisation.waydroid.enable = true;
   networking.nftables.enable = true;
