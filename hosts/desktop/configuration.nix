@@ -80,6 +80,7 @@
     kdePackages.plasma-integration
     waydroid-helper
     android-tools
+    droidcam
 
     # --- Gaming Tools & Utilities ---
     vulkan-tools
