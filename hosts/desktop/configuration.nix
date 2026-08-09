@@ -33,11 +33,23 @@
   };
 
   security.rtkit.enable = true;
+
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    wireplumber.extraConfig.bluetoothEnhancements = {
+      "monitor.bluez.properties" = {
+        "bluez5.enable-sbc-xq" = true;
+        "bluez5.enable-msbc" = true;
+        "bluez5.enable-hw-volume" = true;
+        # Enable HFP (Hands-Free Profile) natively
+        "bluez5.roles" = [ "hsp_hs" "hsp_ag" "hfp_hf" "hfp_ag" ];
+        # Force PipeWire to auto-switch to HFP when an app requests the mic
+        "bluez5.autoswitch-profile" = true;
+      };
+    };
   };
 
   programs.gamemode.enable = true;
