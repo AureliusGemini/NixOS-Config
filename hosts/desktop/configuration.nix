@@ -113,13 +113,8 @@
   };
 
   boot = {
-    # 1. Provide the virtual webcam module to your kernel
     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
-
-    # 2. Tell Linux to automatically load it at boot
     kernelModules = [ "v4l2loopback" ];
-
-    # 3. Configure the virtual camera device so apps (Discord/OBS/Chrome) recognize it cleanly
     extraModprobeConfig = ''
       options v4l2loopback exclusive_caps=1 card_label="DroidCam Video"
     '';
