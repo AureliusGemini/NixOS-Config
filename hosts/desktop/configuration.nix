@@ -49,6 +49,8 @@
   };
   hardware.steam-hardware.enable = true;
 
+  programs.droidcam.enable = true
+
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
