@@ -19,7 +19,19 @@
   };
   networking.hostName = "nixos";
 
-  hardware.bluetooth.enable = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    settings = {
+      General = {
+      # Enables Headset/Handsfree profiles along with standard audio
+        Enable = "Source,Sink,Media,Socket";
+        ControllerMode = "dual";
+        Experimental = true;
+      };
+    };
+  };
+
   hardware.bluetooth.powerOnBoot = true;
 
   security.rtkit.enable = true;
