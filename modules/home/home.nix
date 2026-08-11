@@ -35,10 +35,10 @@
         hash = "sha256-R41J5Y8N5S4S/21hO8S+yO9A7L4L8O0X1M0M0M0M0M0="; # Nix will complain and give you the real hash if this fails
         fetchSubmodules = true;
       };
-      nativeBuildInputs = with pkgs; [
-        cmake
-        extra-cmake-modules
-        kdePackages.wrapQtAppsHook
+      nativeBuildInputs = [
+        pkgs.cmake
+        pkgs.kdePackages.extra-cmake-modules # <--- Explicitly use kdePackages here
+        pkgs.kdePackages.wrapQtAppsHook
       ];
       buildInputs = with pkgs.kdePackages; [
         ktexteditor
