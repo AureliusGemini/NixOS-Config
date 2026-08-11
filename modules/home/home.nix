@@ -19,7 +19,7 @@
     heroic
     faugus-launcher
 
-#     modrinth-app
+    modrinth-app
 
     opencode-desktop
 
