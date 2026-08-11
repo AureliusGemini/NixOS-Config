@@ -1,7 +1,10 @@
 { config, pkgs, ... }:
 
 {
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -24,7 +27,9 @@
     powerOnBoot = true;
     settings = {
       General = {
-      # Enables Headset/Handsfree profiles along with standard audio
+        # 0x000104 = Computer / Desktop Workstation
+        Class = "0x000104";
+        # Enables Headset/Handsfree profiles along with standard audio
         Enable = "Source,Sink,Media,Socket";
         ControllerMode = "dual";
         Experimental = true;
@@ -52,7 +57,7 @@
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
-  
+
   services.desktopManager.plasma6.enableQt5Integration = true;
   security.pam.services.sddm.enableKwallet = true;
 
@@ -61,7 +66,11 @@
   security.sudo.wheelNeedsPassword = false;
   users.users.aurelius = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager""adbusers" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "adbusers"
+    ];
     description = "AureliusGemini";
   };
 
@@ -86,8 +95,8 @@
     vulkan-tools
     wineWow64Packages.stableFull # Standard Wine fallback for system integrations
     mangohud
-    gamescope              # Valve micro-compositor
-    goverlay               # GUI configurator for MangoHud
+    gamescope # Valve micro-compositor
+    goverlay # GUI configurator for MangoHud
 
     (wrapOBS {
       plugins = with obs-studio-plugins; [
@@ -105,20 +114,24 @@
     enable = true;
     update.onActivation = true; # Automatically updates flatpaks on rebuild
     remotes = [
-      { name = "flathub"; location = "https://dl.flathub.org/repo/flathub.flatpakrepo"; }
+      {
+        name = "flathub";
+        location = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+      }
     ];
     packages = [
       "org.vinegarhq.Sober"
+      "com.modrinth.ModrinthApp"
     ];
   };
 
-#   boot = {
-#     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
-#     kernelModules = [ "v4l2loopback" "snd_aloop" ];
-#     extraModprobeConfig = ''
-#       options v4l2loopback exclusive_caps=1 card_label="DroidCam Video"
-#     '';
-#   };
+  #   boot = {
+  #     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+  #     kernelModules = [ "v4l2loopback" "snd_aloop" ];
+  #     extraModprobeConfig = ''
+  #       options v4l2loopback exclusive_caps=1 card_label="DroidCam Video"
+  #     '';
+  #   };
 
   virtualisation.waydroid.enable = true;
   networking.nftables.enable = true;
@@ -127,15 +140,22 @@
   zramSwap.enable = true;
   zramSwap.memoryPercent = 50;
 
-  swapDevices = [ {
-    device = "/var/lib/swapfile";
-    size = 8192;
-  } ];
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 8192;
+    }
+  ];
 
   fileSystems."/mnt/storage" = {
     device = "/dev/bcache0"; # Or replace with "/dev/disk/by-uuid/YOUR-UUID" (Recommended)
-    fsType = "btrfs";        # Change to "ext4" if you didn't format it as Btrfs
-    options = [ "defaults" "nofail" "x-udisks-internal" "compress=zstd" ];
+    fsType = "btrfs"; # Change to "ext4" if you didn't format it as Btrfs
+    options = [
+      "defaults"
+      "nofail"
+      "x-udisks-internal"
+      "compress=zstd"
+    ];
   };
 
   system.stateVersion = "26.05";
