@@ -31,7 +31,7 @@
       src = pkgs.fetchFromGitHub {
         owner = "leia-uwu";
         repo = "kate-discord-rpc";
-        rev = "a597c4bd3f45811c7fa15f50f4fa6e8bd2aa9500"; # <--- Exact commit hash instead of "main"
+        rev = "refs/heads/master"; # <--- Explicitly point to master branch
         hash = "sha256-R41J5Y8N5S4S/21hO8S+yO9A7L4L8O0X1M0M0M0M0M0="; # Nix will mismatch this and output the real SHA256
         fetchSubmodules = true;
       };
