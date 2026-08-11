@@ -46,6 +46,7 @@
         kconfig
         ki18n
         qtbase
+        pkgs.rapidjson
       ];
     })
     nixd
