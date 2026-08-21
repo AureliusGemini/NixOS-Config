@@ -19,22 +19,22 @@ in {
     settings = mkOption {
       type = types.attrsOf types.anything;
       default = { };
-      description = "Configuration settings written to katerc.";
+      description = "Configuration settings written directly to ~/.config/katerc.";
     };
 
     sessionSettings = mkOption {
       type = types.attrsOf types.anything;
       default = { };
-      description = "Session configuration written to anonymous.katesession (controls plugin checkmarks).";
+      description = "Session settings written to ~/.local/state/kate/anonymous.katesession.";
     };
   };
 
   config = mkIf cfg.enable {
-    # Keep all listed plugin binaries installed so Kate discovers them
     home.packages = [ cfg.package ] ++ cfg.plugins;
 
     xdg.configFile."katerc".text = generators.toINI { } cfg.settings;
 
-    xdg.stateFile."kate/anonymous.katesession".text = generators.toINI { } cfg.sessionSettings;
+    xdg.stateFile."kate/anonymous.katesession".text =
+      generators.toINI { } cfg.sessionSettings;
   };
 }

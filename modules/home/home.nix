@@ -1,13 +1,14 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./kate.nix ];
+  imports = [
+    ./kate.nix
+  ];
 
   home.username = "aurelius";
   home.homeDirectory = "/home/aurelius";
 
   home.sessionVariables = {
-    # This forces all launchers to look at Steam's custom tool folder
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${config.home.homeDirectory}/.steam/root/compatibilitytools.d";
   };
 
@@ -38,7 +39,6 @@
     package = pkgs.vscode;
     profiles.default.extensions = with pkgs.vscode-extensions; [
       jnoortheen.nix-ide
-      # ms-vscode.cpptools
       leonardssh.vscord
     ];
     profiles.default.userSettings = {
@@ -46,7 +46,6 @@
       "telemetry.telemetryLevel" = "off";
       "window.titleBarStyle" = "custom";
 
-      # Configure nix-ide to use nixd and nixfmt
       "nix.enableLanguageServer" = true;
       "nix.serverPath" = "nixd";
       "nix.formatterPath" = "nixfmt";
@@ -72,7 +71,7 @@
     };
     sessionSettings = {
       "Kate Plugins" = {
-        "kate-discord-rpcplugin" = false; # <-- false keeps it in the list but unchecks it; true checks it
+        "kate-discord-rpcplugin" = true;
       };
     };
   };
