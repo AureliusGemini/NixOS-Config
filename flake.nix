@@ -16,25 +16,34 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, nix-flatpak, ... }@inputs: {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        # Point to the new desktop host folder
-        ./hosts/desktop/hardware-configuration.nix
-        ./hosts/desktop/configuration.nix
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      sops-nix,
+      nix-flatpak,
+      ...
+    }@inputs:
+    {
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          # Point to the new desktop host folder
+          ./hosts/desktop/hardware-configuration.nix
+          ./hosts/desktop/configuration.nix
 
-        inputs.sops-nix.nixosModules.sops
-        inputs.nix-flatpak.nixosModules.nix-flatpak
+          inputs.sops-nix.nixosModules.sops
+          inputs.nix-flatpak.nixosModules.nix-flatpak
 
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          # Point to the new home module folder
-          home-manager.users.aurelius = import ./modules/home/home.nix;
-        }
-      ];
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "backup"; # <-- Automatically renames conflicts to .backup
+            home-manager.users.aurelius = import ./modules/home/home.nix;
+          }
+        ];
+      };
     };
-  };
 }
