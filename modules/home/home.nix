@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ ./modules/home/kate.nix ];
+
   home.username = "aurelius";
   home.homeDirectory = "/home/aurelius";
 
@@ -20,32 +22,6 @@
 
     opencode-desktop
 
-    # Kate + Discord RPC plugin
-    kdePackages.kate
-    (pkgs.stdenv.mkDerivation {
-      pname = "kate-discord-rpc";
-      version = "unstable";
-      src = pkgs.fetchFromGitHub {
-        owner = "leia-uwu";
-        repo = "kate-discord-rpc";
-        rev = "refs/heads/master";
-        hash = "sha256-TWMYy6oeFJZ1WTS9tNQLk9RcRBwkvVrZy9kVU2Kr90s=";
-        fetchSubmodules = true;
-      };
-      nativeBuildInputs = [
-        pkgs.cmake
-        pkgs.kdePackages.extra-cmake-modules
-        pkgs.kdePackages.wrapQtAppsHook
-      ];
-      buildInputs = with pkgs.kdePackages; [
-        ktexteditor
-        kcoreaddons
-        kconfig
-        ki18n
-        qtbase
-        pkgs.rapidjson
-      ];
-    })
     nixd
     nixfmt
     bash-language-server
@@ -80,6 +56,22 @@
             "command" = [ "nixfmt" ];
           };
         };
+      };
+    };
+  };
+
+  # Kate configuration via new module
+  programs.kate = {
+    enable = true;
+    plugins = [
+      (pkgs.callPackage ./pkgs/kate-discord-rpc.nix { })
+    ];
+    settings = {
+      "General" = {
+        "Animate Bracket Matching" = true;
+      };
+      "Kate Plugins" = {
+        "kate-discord-rpcplugin" = true;
       };
     };
   };
