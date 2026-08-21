@@ -64,7 +64,7 @@
   programs.kate = {
     enable = true;
     plugins = [
-      (pkgs.callPackage ./pkgs/kate-discord-rpc.nix { })
+      (pkgs.callPackage ../../pkgs/kate-discord-rpc.nix { })
     ];
     settings = {
       "General" = {
