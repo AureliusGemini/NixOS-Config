@@ -88,7 +88,7 @@
     enable = true;
     settings = {
       user.name = "AureliusGemini";
-      user.email = "aureliusgemini@gmail.com";
+      user.email = "93374856+AureliusGemini@users.noreply.github.com";
     };
   };
 
