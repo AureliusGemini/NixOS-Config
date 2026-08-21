@@ -4,8 +4,6 @@ with lib;
 
 let
   cfg = config.programs.kate;
-
-  # Local package derivation for the Discord RPC plugin
   kateDiscordRpcPkg = pkgs.callPackage ../../pkgs/kate-discord-rpc.nix { };
 in {
   options.programs.kate = {
@@ -14,7 +12,7 @@ in {
     enableDiscordRpc = mkOption {
       type = types.bool;
       default = false;
-      description = "Whether to build, install, and enable the Discord RPC plugin for Kate.";
+      description = "Whether to build, install, and activate the Discord RPC plugin for Kate.";
     };
 
     package = mkPackageOption pkgs.kdePackages "kate" { };
@@ -27,16 +25,16 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # If enableDiscordRpc is true, Nix installs the plugin binary into the environment
     home.packages = [ cfg.package ]
       ++ (lib.optional cfg.enableDiscordRpc kateDiscordRpcPkg);
 
-    xdg.configFile."katerc".text = generators.toINI { } (
-      recursiveUpdate cfg.settings {
-        "Kate Plugins" = {
-          "kate-discord-rpcplugin" = cfg.enableDiscordRpc;
-        };
-      }
-    );
+    xdg.configFile."katerc".text = generators.toINI { } cfg.settings;
+
+    # Force the plugin state into Kate's default session
+    xdg.stateFile."kate/anonymous.katesession".text = generators.toINI { } {
+      "Kate Plugins" = {
+        "kate-discord-rpcplugin" = cfg.enableDiscordRpc;
+      };
+    };
   };
 }
