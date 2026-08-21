@@ -60,21 +60,26 @@
     };
   };
 
-  # Kate configuration via new module
   programs.kate = {
-    enable = true;
-    plugins = [
-      (pkgs.callPackage ../../pkgs/kate-discord-rpc.nix { })
-    ];
-    settings = {
-      "General" = {
-        "Animate Bracket Matching" = true;
-      };
-      "Kate Plugins" = {
-        "kate-discord-rpcplugin" = false;
-      };
-    };
+  enable = true;
+  plugins = [ ]; # <-- Leave empty to remove the plugin binary
   };
+
+#   # Kate configuration via new module
+#   programs.kate = {
+#     enable = true;
+#     plugins = [
+#       (pkgs.callPackage ../../pkgs/kate-discord-rpc.nix { })
+#     ];
+#     settings = {
+#       "General" = {
+#         "Animate Bracket Matching" = true;
+#       };
+#       "Kate Plugins" = {
+#         "kate-discord-rpcplugin" = false;
+#       };
+#     };
+#   };
 
   programs.git = {
     enable = true;
