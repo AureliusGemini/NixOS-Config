@@ -48,6 +48,8 @@
     })
     nixd
     nixfmt
+    nodePackages.bash-language-server
+    shellcheck
   ];
 
   programs.firefox = {
