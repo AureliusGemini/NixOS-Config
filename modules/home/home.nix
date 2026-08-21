@@ -62,7 +62,7 @@
 
   programs.kate = {
     enable = true;
-    enableDiscordRpc = true; # <-- Set to false to disable and uninstall, true to enable
+    enableDiscordRpc = false; # <-- Set to false to disable and uninstall, true to enable
 
     settings = {
       "General" = {
