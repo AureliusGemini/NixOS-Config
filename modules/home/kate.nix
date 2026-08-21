@@ -4,17 +4,20 @@ with lib;
 
 let
   cfg = config.programs.kate;
+
+  # Local package derivation for the Discord RPC plugin
+  kateDiscordRpcPkg = pkgs.callPackage ../../pkgs/kate-discord-rpc.nix { };
 in {
   options.programs.kate = {
     enable = mkEnableOption "Kate text editor configuration";
 
-    package = mkPackageOption pkgs.kdePackages "kate" { };
-
-    plugins = mkOption {
-      type = types.listOf types.package;
-      default = [ ];
-      description = "List of Kate plugin packages to install.";
+    enableDiscordRpc = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether to build, install, and enable the Discord RPC plugin for Kate.";
     };
+
+    package = mkPackageOption pkgs.kdePackages "kate" { };
 
     settings = mkOption {
       type = types.attrsOf types.anything;
@@ -24,11 +27,16 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ cfg.package ] ++ cfg.plugins;
+    # If enableDiscordRpc is true, Nix installs the plugin binary into the environment
+    home.packages = [ cfg.package ]
+      ++ (lib.optional cfg.enableDiscordRpc kateDiscordRpcPkg);
 
-    xdg.configFile."katerc".text = generators.toINI { } cfg.settings;
-
-    # Also link to katemetainfos if your KDE session reads plugin state from there
-    xdg.configFile."katemetainfos".text = generators.toINI { } cfg.settings;
+    xdg.configFile."katerc".text = generators.toINI { } (
+      recursiveUpdate cfg.settings {
+        "Kate Plugins" = {
+          "kate-discord-rpcplugin" = cfg.enableDiscordRpc;
+        };
+      }
+    );
   };
 }

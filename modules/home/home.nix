@@ -61,8 +61,14 @@
   };
 
   programs.kate = {
-  enable = true;
-  plugins = [ ]; # <-- Leave empty to remove the plugin binary
+    enable = true;
+    enableDiscordRpc = true; # <-- Set to false to disable and uninstall, true to enable
+
+    settings = {
+      "General" = {
+        "Animate Bracket Matching" = true;
+      };
+    };
   };
 
 #   # Kate configuration via new module
