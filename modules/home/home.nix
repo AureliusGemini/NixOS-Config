@@ -48,7 +48,7 @@
     })
     nixd
     nixfmt
-    nodePackages.bash-language-server
+    bash-language-server
     shellcheck
   ];
 
