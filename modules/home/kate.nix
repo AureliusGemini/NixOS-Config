@@ -20,24 +20,15 @@ in {
       type = types.attrsOf types.anything;
       default = { };
       description = "Configuration settings written directly to ~/.config/katerc.";
-      example = literalExpression ''
-        {
-          "General" = {
-            "Animate Bracket Matching" = true;
-          };
-        }
-      '';
     };
   };
 
   config = mkIf cfg.enable {
     home.packages = [ cfg.package ] ++ cfg.plugins;
 
-    # Ensure Kate and Qt find plugins installed in user profiles
-    home.sessionVariables = {
-      QT_PLUGIN_PATH = "$HOME/.nix-profile/lib/qt-6/plugins:$HOME/.nix-profile/lib/plugins:$QT_PLUGIN_PATH";
-    };
-
     xdg.configFile."katerc".text = generators.toINI { } cfg.settings;
+
+    # Also link to katemetainfos if your KDE session reads plugin state from there
+    xdg.configFile."katemetainfos".text = generators.toINI { } cfg.settings;
   };
 }
