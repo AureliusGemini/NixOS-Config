@@ -62,30 +62,20 @@
 
   programs.kate = {
     enable = true;
-    enableDiscordRpc = false; # <-- Set to false to disable and uninstall, true to enable
-
+    plugins = [
+      (pkgs.callPackage ../../pkgs/kate-discord-rpc.nix { })
+    ];
     settings = {
       "General" = {
         "Animate Bracket Matching" = true;
       };
     };
+    sessionSettings = {
+      "Kate Plugins" = {
+        "kate-discord-rpcplugin" = false; # <-- false keeps it in the list but unchecks it; true checks it
+      };
+    };
   };
-
-#   # Kate configuration via new module
-#   programs.kate = {
-#     enable = true;
-#     plugins = [
-#       (pkgs.callPackage ../../pkgs/kate-discord-rpc.nix { })
-#     ];
-#     settings = {
-#       "General" = {
-#         "Animate Bracket Matching" = true;
-#       };
-#       "Kate Plugins" = {
-#         "kate-discord-rpcplugin" = false;
-#       };
-#     };
-#   };
 
   programs.git = {
     enable = true;
