@@ -71,7 +71,7 @@
         "Animate Bracket Matching" = true;
       };
       "Kate Plugins" = {
-        "kate-discord-rpcplugin" = true;
+        "kate-discord-rpcplugin" = false;
       };
     };
   };
