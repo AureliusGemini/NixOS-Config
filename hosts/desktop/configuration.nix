@@ -111,6 +111,8 @@
         droidcam-obs
       ];
     })
+
+    pciutils
   ];
 
   services.flatpak = {
