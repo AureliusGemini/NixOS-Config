@@ -11,15 +11,12 @@
 
   home.packages = with pkgs; [
     (discord.override { withVencord = true; })
-    kdePackages.plasma-browser-integration
 
     protonup-qt
     protontricks
     lutris
     heroic
     faugus-launcher
-
-    #     modrinth-app
 
     opencode-desktop
 
@@ -32,7 +29,7 @@
         owner = "leia-uwu";
         repo = "kate-discord-rpc";
         rev = "refs/heads/master";
-        hash = "sha256-TWMYy6oeFJZ1WTS9tNQLk9RcRBwkvVrZy9kVU2Kr90s="; # <--- The real hash!
+        hash = "sha256-TWMYy6oeFJZ1WTS9tNQLk9RcRBwkvVrZy9kVU2Kr90s=";
         fetchSubmodules = true;
       };
       nativeBuildInputs = [
@@ -62,8 +59,8 @@
     enable = true;
     package = pkgs.vscode;
     profiles.default.extensions = with pkgs.vscode-extensions; [
-      jnoortheen.nix-ide # <--- Replace bbenoist.nix with this
-      ms-vscode.cpptools
+      jnoortheen.nix-ide
+      # ms-vscode.cpptools
       leonardssh.vscord
     ];
     profiles.default.userSettings = {

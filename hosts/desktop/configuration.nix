@@ -7,6 +7,10 @@
   ];
 
   nixpkgs.config.allowUnfree = true;
+  nix.settings.trusted-users = [
+    "root"
+    "@wheel"
+  ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -95,7 +99,6 @@
     vulkan-tools
     wineWow64Packages.stableFull # Standard Wine fallback for system integrations
     mangohud
-    gamescope # Valve micro-compositor
     goverlay # GUI configurator for MangoHud
 
     (wrapOBS {
@@ -125,14 +128,6 @@
     ];
   };
 
-  #   boot = {
-  #     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
-  #     kernelModules = [ "v4l2loopback" "snd_aloop" ];
-  #     extraModprobeConfig = ''
-  #       options v4l2loopback exclusive_caps=1 card_label="DroidCam Video"
-  #     '';
-  #   };
-
   virtualisation.waydroid.enable = true;
   networking.nftables.enable = true;
   networking.firewall.checkReversePath = false;
@@ -148,8 +143,8 @@
   ];
 
   fileSystems."/mnt/storage" = {
-    device = "/dev/bcache0"; # Or replace with "/dev/disk/by-uuid/YOUR-UUID" (Recommended)
-    fsType = "btrfs"; # Change to "ext4" if you didn't format it as Btrfs
+    device = "/dev/disk/by-uuid/5a1c9e0a-cafd-4f46-a596-f33e7abd9387";
+    fsType = "btrfs";
     options = [
       "defaults"
       "nofail"
@@ -157,6 +152,12 @@
       "compress=zstd"
     ];
   };
+
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true; # Required for 32-bit Steam games
+  };
+  services.xserver.videoDrivers = [ "amdgpu" ];
 
   system.stateVersion = "26.05";
 }
