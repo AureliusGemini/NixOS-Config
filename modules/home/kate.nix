@@ -33,6 +33,11 @@ in {
   config = mkIf cfg.enable {
     home.packages = [ cfg.package ] ++ cfg.plugins;
 
+    # Ensure Kate and Qt find plugins installed in user profiles
+    home.sessionVariables = {
+      QT_PLUGIN_PATH = "$HOME/.nix-profile/lib/qt-6/plugins:$HOME/.nix-profile/lib/plugins:$QT_PLUGIN_PATH";
+    };
+
     xdg.configFile."katerc".text = generators.toINI { } cfg.settings;
   };
 }
