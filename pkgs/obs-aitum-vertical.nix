@@ -5,6 +5,7 @@
   cmake,
   obs-studio,
   qt6,
+  curl,
 }:
 
 stdenv.mkDerivation {
@@ -26,6 +27,7 @@ stdenv.mkDerivation {
   buildInputs = [
     obs-studio
     qt6.qtbase
+    curl
   ];
 
   dontWrapQtApps = true;
