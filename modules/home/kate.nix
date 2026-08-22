@@ -1,3 +1,4 @@
+# ~/nixos-config/modules/home/kate.nix
 { config, lib, pkgs, ... }:
 
 with lib;

@@ -1,3 +1,4 @@
+<!--    ~/nixos-config/README.md   -->
 # NixOS Flake Configuration
 
 Declarative NixOS configuration featuring:

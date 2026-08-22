@@ -101,17 +101,6 @@
     mangohud
     goverlay # GUI configurator for MangoHud
 
-    (wrapOBS {
-      plugins = with obs-studio-plugins; [
-        obs-aitum-multistream
-        wlrobs
-        obs-vaapi
-        obs-vkcapture
-        obs-pipewire-audio-capture
-        droidcam-obs
-      ];
-    })
-
     pciutils
   ];
 

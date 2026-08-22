@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
+let
+  obs-aitum-vertical = pkgs.callPackage ../../pkgs/obs-aitum-vertical.nix { };
+in
 {
   imports = [
     ./kate.nix
@@ -28,6 +31,20 @@
     bash-language-server
     shellcheck
   ];
+
+  programs.obs-studio = {
+    enable = true;
+    plugins = (with pkgs.obs-studio-plugins; [
+      obs-aitum-multistream
+      wlrobs
+      obs-vaapi
+      obs-vkcapture
+      obs-pipewire-audio-capture
+      droidcam-obs
+    ]) ++ [
+      obs-aitum-vertical
+    ];
+  };
 
   programs.firefox = {
     enable = true;
