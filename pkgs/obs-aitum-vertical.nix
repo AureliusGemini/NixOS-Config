@@ -15,7 +15,7 @@ stdenv.mkDerivation {
     owner = "Aitum";
     repo = "obs-vertical-canvas";
     rev = "refs/heads/main";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-GlRyQl2XcH8PFndv9L6STqT+YJk4S+Sjz/q+6P0A5Og=";
     fetchSubmodules = true;
   };
 
