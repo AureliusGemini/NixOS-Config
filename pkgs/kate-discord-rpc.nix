@@ -15,7 +15,7 @@ stdenv.mkDerivation {
     owner = "leia-uwu";
     repo = "kate-discord-rpc";
     rev = "93a14a03887540f819b3b4885fd8c789aee05b19";
-    hash = "sha256-NHa5SHx2IKUCHlwAGwDRoiRSBygzuNRxmXV5qM5GDfE=";
+    hash = "sha256-TWMYy6oeFJZ1WTS9tNQLk9RcRBwkvVrZy9kVU2Kr90s=";
     fetchSubmodules = true;
   };
 
@@ -25,20 +25,22 @@ stdenv.mkDerivation {
     kdePackages.wrapQtAppsHook
   ];
 
-  buildInputs = with kdePackages; [
-    ktexteditor
-    kcoreaddons
-    kconfig
-    ki18n
-    qtbase
-    rapidjson
+  buildInputs = [
+    kdePackages.ktexteditor
+    kdePackages.kcoreaddons
+    kdePackages.kconfig
+    kdePackages.ki18n
+    kdePackages.qtbase
+    rapidjson # <--- 2. Add rapidjson here
   ];
+
+  __structuredAttrs = true;
+  strictDeps = true;
 
   meta = with lib; {
     description = "Discord Rich Presence plugin for KDE Kate";
     homepage = "https://github.com/leia-uwu/kate-discord-rpc";
     license = licenses.gpl2Plus;
-    maintainers = [ ];
     platforms = platforms.linux;
   };
 }
