@@ -16,7 +16,10 @@ in
   };
 
   home.packages = with pkgs; [
-    (discord.override {withVencord = true; extraArgs = "--password-store=basic";})
+    (discord.override {
+      withVencord = true;
+      extraArgs = "--password-store=basic";
+    })
 
     # Tailscale system tray GUI for KDE Plasma
     tailscale-systray
