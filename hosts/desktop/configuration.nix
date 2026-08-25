@@ -15,12 +15,13 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Polling interval increased to prevent false offline triggers in apps like Heroic
   networking.networkmanager = {
     enable = true;
     settings = {
       connectivity = {
         uri = "http://networkcheck.kde.org";
-        interval = 5;
+        interval = 60;
       };
     };
   };
@@ -84,29 +85,31 @@
     capSysNice = true;
   };
 
+  # Fix for dynamically linked unpatched binaries and game runners (Lutris, etc.)
+  programs.nix-ld.enable = true;
+
   environment.systemPackages = with pkgs; [
     git
     qpwgraph
     pavucontrol
     vim
     wget
-    kdePackages.plasma-integration
     waydroid-helper
     android-tools
     droidcam
 
     # --- Gaming Tools & Utilities ---
     vulkan-tools
-    wineWow64Packages.stableFull # Standard Wine fallback for system integrations
+    wineWow64Packages.stableFull
     mangohud
-    goverlay # GUI configurator for MangoHud
+    goverlay
 
     pciutils
   ];
 
   services.flatpak = {
     enable = true;
-    update.onActivation = true; # Automatically updates flatpaks on rebuild
+    update.onActivation = true;
     remotes = [
       {
         name = "flathub";
@@ -133,6 +136,11 @@
     }
   ];
 
+  # Override OS Btrfs subvolumes safely to enable zstd compression without touching hardware-configuration.nix
+  fileSystems."/".options = [ "subvol=@" "compress=zstd" ];
+  fileSystems."/nix".options = [ "subvol=@nix" "compress=zstd" ];
+  fileSystems."/home".options = [ "subvol=@home" "compress=zstd" ];
+
   fileSystems."/mnt/storage" = {
     device = "/dev/disk/by-uuid/5a1c9e0a-cafd-4f46-a596-f33e7abd9387";
     fsType = "btrfs";
@@ -146,7 +154,7 @@
 
   hardware.graphics = {
     enable = true;
-    enable32Bit = true; # Required for 32-bit Steam games
+    enable32Bit = true;
   };
   services.xserver.videoDrivers = [ "amdgpu" ];
 

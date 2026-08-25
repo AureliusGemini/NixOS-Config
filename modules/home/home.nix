@@ -36,7 +36,6 @@ in
     enable = true;
     plugins = (with pkgs.obs-studio-plugins; [
       obs-aitum-multistream
-      wlrobs
       obs-vaapi
       obs-vkcapture
       obs-pipewire-audio-capture

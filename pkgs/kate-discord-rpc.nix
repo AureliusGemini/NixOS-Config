@@ -1,29 +1,36 @@
-{ pkgs }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  cmake,
+  kdePackages,
+  rapidjson,
+}:
 
-pkgs.stdenv.mkDerivation {
+stdenv.mkDerivation {
   pname = "kate-discord-rpc";
   version = "unstable";
 
-  src = pkgs.fetchFromGitHub {
+  src = fetchFromGitHub {
     owner = "leia-uwu";
     repo = "kate-discord-rpc";
-    rev = "refs/heads/master";
+    rev = "f5fbf77d206f6e1f0e21ce9a0f4435ce3ef41870";
     hash = "sha256-TWMYy6oeFJZ1WTS9tNQLk9RcRBwkvVrZy9kVU2Kr90s=";
     fetchSubmodules = true;
   };
 
   nativeBuildInputs = [
-    pkgs.cmake
-    pkgs.kdePackages.extra-cmake-modules
-    pkgs.kdePackages.wrapQtAppsHook
+    cmake
+    kdePackages.extra-cmake-modules
+    kdePackages.wrapQtAppsHook
   ];
 
-  buildInputs = with pkgs.kdePackages; [
+  buildInputs = with kdePackages; [
     ktexteditor
     kcoreaddons
     kconfig
     ki18n
     qtbase
-    pkgs.rapidjson
+    rapidjson
   ];
 }

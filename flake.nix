@@ -14,6 +14,7 @@
     };
     nix-flatpak = {
       url = "github:gmodena/nix-flatpak";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -30,7 +31,7 @@
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          # Point to the new desktop host folder
+          # Point to the desktop host folder
           ./hosts/desktop/hardware-configuration.nix
           ./hosts/desktop/configuration.nix
 
@@ -41,7 +42,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "backup"; # <-- Automatically renames conflicts to .backup
+            home-manager.backupFileExtension = "backup";
             home-manager.users.aurelius = import ./modules/home/home.nix;
           }
         ];
