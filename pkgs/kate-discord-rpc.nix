@@ -9,13 +9,13 @@
 
 stdenv.mkDerivation {
   pname = "kate-discord-rpc";
-  version = "unstable";
+  version = "0-unstable-2026-03-17";
 
   src = fetchFromGitHub {
     owner = "leia-uwu";
     repo = "kate-discord-rpc";
-    rev = "f5fbf77d206f6e1f0e21ce9a0f4435ce3ef41870";
-    hash = "sha256-TWMYy6oeFJZ1WTS9tNQLk9RcRBwkvVrZy9kVU2Kr90s=";
+    rev = "93a14a03887540f819b3b4885fd8c789aee05b19";
+    hash = "sha256-NHa5SHx2IKUCHlwAGwDRoiRSBygzuNRxmXV5qM5GDfE=";
     fetchSubmodules = true;
   };
 
@@ -33,4 +33,12 @@ stdenv.mkDerivation {
     qtbase
     rapidjson
   ];
+
+  meta = with lib; {
+    description = "Discord Rich Presence plugin for KDE Kate";
+    homepage = "https://github.com/leia-uwu/kate-discord-rpc";
+    license = licenses.gpl2Plus;
+    maintainers = [ ];
+    platforms = platforms.linux;
+  };
 }

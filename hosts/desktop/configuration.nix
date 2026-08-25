@@ -15,7 +15,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Polling interval increased to prevent false offline triggers in apps like Heroic
   networking.networkmanager = {
     enable = true;
     settings = {
@@ -32,9 +31,7 @@
     powerOnBoot = true;
     settings = {
       General = {
-        # 0x000104 = Computer / Desktop Workstation
         Class = "0x000104";
-        # Enables Headset/Handsfree profiles along with standard audio
         Enable = "Source,Sink,Media,Socket";
         ControllerMode = "dual";
         Experimental = true;
@@ -79,13 +76,13 @@
     description = "AureliusGemini";
   };
 
-  # Enable Gamescope (gives it permissions for realtime scheduling / performance)
+  # Enable Gamescope
   programs.gamescope = {
     enable = true;
     capSysNice = true;
   };
 
-  # Fix for dynamically linked unpatched binaries and game runners (Lutris, etc.)
+  # Dynamic linker helper for unpatched binaries / game tools
   programs.nix-ld.enable = true;
 
   environment.systemPackages = with pkgs; [
@@ -136,7 +133,7 @@
     }
   ];
 
-  # Override OS Btrfs subvolumes safely to enable zstd compression without touching hardware-configuration.nix
+  # Btrfs compression overrides (applied without modifying hardware-configuration.nix)
   fileSystems."/".options = [ "subvol=@" "compress=zstd" ];
   fileSystems."/nix".options = [ "subvol=@nix" "compress=zstd" ];
   fileSystems."/home".options = [ "subvol=@home" "compress=zstd" ];
