@@ -16,8 +16,7 @@ in
   };
 
   home.packages = with pkgs; [
-    # Discord with native Wayland + PipeWire audio sharing & bundled Vencord
-    vesktop
+    (discord.override {withVencord = true; extraArgs = "--password-store=basic";})
 
     # Tailscale system tray GUI for KDE Plasma
     tailscale-systray
