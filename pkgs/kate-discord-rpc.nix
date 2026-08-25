@@ -31,7 +31,7 @@ stdenv.mkDerivation {
     kdePackages.kconfig
     kdePackages.ki18n
     kdePackages.qtbase
-    rapidjson # <--- 2. Add rapidjson here
+    rapidjson
   ];
 
   __structuredAttrs = true;
