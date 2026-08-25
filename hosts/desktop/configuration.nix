@@ -26,6 +26,18 @@
   };
   networking.hostName = "nixos";
 
+  # Enable Tailscale mesh network daemon
+  services.tailscale.enable = true;
+
+  # Enable OpenSSH daemon for remote VS Code / terminal access
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+    };
+  };
+
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
@@ -133,7 +145,7 @@
     }
   ];
 
-  # Btrfs compression overrides (applied without modifying hardware-configuration.nix)
+  # Btrfs compression overrides
   fileSystems."/".options = [ "subvol=@" "compress=zstd" ];
   fileSystems."/nix".options = [ "subvol=@nix" "compress=zstd" ];
   fileSystems."/home".options = [ "subvol=@home" "compress=zstd" ];

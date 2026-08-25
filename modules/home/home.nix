@@ -16,7 +16,11 @@ in
   };
 
   home.packages = with pkgs; [
-    (discord.override { withVencord = true; })
+    # Discord with native Wayland + PipeWire audio sharing & bundled Vencord
+    vesktop
+
+    # Tailscale system tray GUI for KDE Plasma
+    tailscale-systray
 
     protonup-qt
     protontricks
