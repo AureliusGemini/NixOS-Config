@@ -67,11 +67,13 @@ in
     profiles.default.extensions = with pkgs.vscode-extensions; [
       jnoortheen.nix-ide
       leonardssh.vscord
+      pkief.material-icon-theme
     ];
     profiles.default.userSettings = {
       "update.mode" = "none";
       "telemetry.telemetryLevel" = "off";
       "window.titleBarStyle" = "custom";
+      "workbench.iconTheme" = "material-icon-theme";
 
       "nix.enableLanguageServer" = true;
       "nix.serverPath" = "nixd";
