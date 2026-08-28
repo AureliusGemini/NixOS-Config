@@ -14,7 +14,7 @@ Declarative NixOS and Home Manager configuration for an AMD Desktop workstation,
 - **Desktop Environment:** KDE Plasma 6 (Wayland) + SDDM
 - **Audio:** PipeWire & WirePlumber (low-latency RTKit enabled)
 - **Storage:** 
-  - **OS Drive (SSD):** Btrfs (`/`, `/nix`, `/home` with `compress=zstd`)
+  - **OS Drive (240GB SSD):** Btrfs (`/`, `/nix`, `/home` with `compress=zstd`)
   - **Game & Media Pool:** `bcache0` (480GB SSD cache in `writethrough` mode + 1TB HDD)
 
 ---

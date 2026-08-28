@@ -31,12 +31,12 @@ in
 
     # Language Servers & Linters
     nixd                     # Nix LSP
-    nixfmt-rfc-style         # Nix formatter (provides 'nixfmt' binary)
+    nixfmt                   # Nix formatter (replaces deprecated nixfmt-rfc-style)
     bash-language-server     # Bash LSP
     shellcheck               # Bash linter
     clang-tools              # C/C++ (clangd)
     pyright                  # Python LSP
-    typescript-language-server # JS/TS LSP (direct top-level attribute)
+    typescript-language-server # JS/TS LSP
     dart                     # Dart/Flutter LSP
     omnisharp-roslyn         # C# (.NET / Unity)
   ];
@@ -108,8 +108,12 @@ in
 
   programs.git = {
     enable = true;
-    userName = "AureliusGemini";
-    userEmail = "93374856+AureliusGemini@users.noreply.github.com";
+    settings = {
+      user = {
+        name = "AureliusGemini";
+        email = "93374856+AureliusGemini@users.noreply.github.com";
+      };
+    };
   };
 
   home.stateVersion = "26.05";
