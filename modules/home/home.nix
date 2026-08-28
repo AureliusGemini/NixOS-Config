@@ -16,7 +16,7 @@ in
   };
 
   home.packages = with pkgs; [
-    (discord.override {withVencord = true;})
+    (discord.override { withVencord = true; })
 
     # Tailscale system tray GUI for KDE Plasma
     tailscale-systray
@@ -29,10 +29,16 @@ in
 
     opencode-desktop
 
-    nixd
-    nixfmt
-    bash-language-server
-    shellcheck
+    # Language Servers & Linters
+    nixd                     # Nix LSP
+    nixfmt-rfc-style         # Nix formatter (provides 'nixfmt' binary)
+    bash-language-server     # Bash LSP
+    shellcheck               # Bash linter
+    clang-tools              # C/C++ (clangd)
+    pyright                  # Python LSP
+    typescript-language-server # JS/TS LSP (direct top-level attribute)
+    dart                     # Dart/Flutter LSP
+    omnisharp-roslyn         # C# (.NET / Unity)
   ];
 
   programs.obs-studio = {
@@ -55,7 +61,9 @@ in
 
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode;
+    package = pkgs.vscode.override {
+      commandLineArgs = "--password-store=basic";
+    };
     profiles.default.extensions = with pkgs.vscode-extensions; [
       jnoortheen.nix-ide
       leonardssh.vscord
@@ -67,13 +75,16 @@ in
 
       "nix.enableLanguageServer" = true;
       "nix.serverPath" = "nixd";
-      "nix.formatterPath" = "nixfmt";
       "nix.serverSettings" = {
         "nixd" = {
           "formatting" = {
             "command" = [ "nixfmt" ];
           };
         };
+      };
+      "[nix]" = {
+        "editor.defaultFormatter" = "jnoortheen.nix-ide";
+        "editor.formatOnSave" = true;
       };
     };
   };
@@ -97,10 +108,8 @@ in
 
   programs.git = {
     enable = true;
-    settings = {
-      user.name = "AureliusGemini";
-      user.email = "93374856+AureliusGemini@users.noreply.github.com";
-    };
+    userName = "AureliusGemini";
+    userEmail = "93374856+AureliusGemini@users.noreply.github.com";
   };
 
   home.stateVersion = "26.05";
