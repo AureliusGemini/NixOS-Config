@@ -15,6 +15,12 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Kernel module parameters for Realtek Wi-Fi stability & HD-Audio pin probing
+  boot.extraModprobeConfig = ''
+    options rtl8188ee fwlps=N ips=N aspm=0
+    options snd-hda-intel model=auto
+  '';
+
   networking.networkmanager = {
     enable = true;
     settings = {
@@ -51,15 +57,18 @@
     };
   };
 
+  # PipeWire Audio Stack with WirePlumber
   security.rtkit.enable = true;
-
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    jack.enable = true;
+    wireplumber.enable = true; # Fixed missing audio capture sources
   };
 
+  # Steam & Gaming Integrations
   programs.gamemode.enable = true;
   programs.steam = {
     enable = true;
@@ -68,6 +77,7 @@
   };
   hardware.steam-hardware.enable = true;
 
+  # Desktop Environment (KDE Plasma 6 on SDDM)
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
@@ -88,7 +98,7 @@
     description = "AureliusGemini";
   };
 
-  # Enable Gamescope
+  # Gamescope & System Utilities
   programs.gamescope = {
     enable = true;
     capSysNice = true;
@@ -145,7 +155,7 @@
     }
   ];
 
-  # Btrfs compression overrides
+  # Btrfs File System Configuration
   fileSystems."/".options = [ "subvol=@" "compress=zstd" ];
   fileSystems."/nix".options = [ "subvol=@nix" "compress=zstd" ];
   fileSystems."/home".options = [ "subvol=@home" "compress=zstd" ];
@@ -161,9 +171,20 @@
     ];
   };
 
+  # Graphics Hardware & 32-bit Acceleration Drivers
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
+    extraPackages = with pkgs; [
+      libva
+      vaapiVdpau
+      libvdpau-va-gl
+    ];
+    extraPackages32 = with pkgs.pkgsi386; [
+      libva
+      vaapiVdpau
+      libvdpau-va-gl
+    ];
   };
   services.xserver.videoDrivers = [ "amdgpu" ];
 
