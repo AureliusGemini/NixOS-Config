@@ -21,6 +21,7 @@ in
     # Tailscale system tray GUI for KDE Plasma
     tailscale-systray
 
+    r2modman
     protonup-qt
     protontricks
     lutris
