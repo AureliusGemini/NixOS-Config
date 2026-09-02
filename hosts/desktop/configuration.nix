@@ -180,7 +180,7 @@
       libva-vdpau-driver
       libvdpau-va-gl
     ];
-    extraPackages32 = with pkgs.pkgsi386; [
+    extraPackages32 = with pkgs; [
       libva
       libva-vdpau-driver
       libvdpau-va-gl
