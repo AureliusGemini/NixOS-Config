@@ -67,7 +67,7 @@
     pulse.enable = true;
     jack.enable = true;
 #     wireplumber.enable = true;
-#   };
+  };
 
   # Steam & Gaming Integrations
   programs.gamemode.enable = true;
