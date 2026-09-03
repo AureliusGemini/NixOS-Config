@@ -44,12 +44,12 @@
     };
   };
 
+  # Bluetooth set to Computer (0x000100) instead of Car Audio (0x000104)
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
     settings = {
       General = {
-        # 0x000100 = Computer / Desktop (Fixes "Car BT" detection)
         Class = "0x000100";
         Enable = "Source,Sink,Media,Socket";
         ControllerMode = "dual";
@@ -58,7 +58,7 @@
     };
   };
 
-  # PipeWire Audio Stack & WirePlumber Bluetooth Auto-Switching
+  # PipeWire Audio Stack
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -66,17 +66,7 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     jack.enable = true;
-    wireplumber = {
-      enable = true;
-      extraConfig = {
-        "10-bluetooth-policy" = {
-          "wireplumber.settings" = {
-            # Auto-switch Bluetooth headphones to HFP/HSP profile when mic is requested
-            "bluetooth.autoswitch-to-headset-profile" = true;
-          };
-        };
-      };
-    };
+    wireplumber.enable = true;
   };
 
   # Steam & Gaming Integrations
@@ -182,7 +172,7 @@
     ];
   };
 
-  # Graphics Hardware & 32-bit Acceleration Drivers
+  # Graphics Hardware Drivers
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
