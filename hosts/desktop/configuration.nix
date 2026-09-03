@@ -49,7 +49,8 @@
     powerOnBoot = true;
     settings = {
       General = {
-        Class = "0x000104";
+        # 0x000100 = Computer / Desktop (Fixes "Car BT" detection)
+        Class = "0x000100";
         Enable = "Source,Sink,Media,Socket";
         ControllerMode = "dual";
         Experimental = true;
@@ -57,7 +58,7 @@
     };
   };
 
-  # PipeWire Audio Stack with WirePlumber
+  # PipeWire Audio Stack & WirePlumber Bluetooth Auto-Switching
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -65,7 +66,17 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     jack.enable = true;
-    wireplumber.enable = true; # Fixed missing audio capture sources
+    wireplumber = {
+      enable = true;
+      extraConfig = {
+        "10-bluetooth-policy" = {
+          "wireplumber.settings" = {
+            # Auto-switch Bluetooth headphones to HFP/HSP profile when mic is requested
+            "bluetooth.autoswitch-to-headset-profile" = true;
+          };
+        };
+      };
+    };
   };
 
   # Steam & Gaming Integrations
