@@ -58,11 +58,7 @@
     };
   };
 
-  # Enable sound and disable pulse
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
-
-  # Realtime priority for audio
   security.rtkit.enable = true;
 
   # Pipewire configuration
