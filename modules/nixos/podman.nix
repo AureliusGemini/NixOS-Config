@@ -4,7 +4,7 @@
 {
   virtualisation.podman = {
     enable = true;
-    dockerCompat = true; # Maps 'docker' CLI commands to podman
+    dockerCompat = true;
     defaultNetwork.settings.dns_enabled = true;
   };
 
@@ -24,8 +24,9 @@
         ];
       };
 
+      # Fix: Use official ArchiSteamFarm image repository
       asf = {
-        image = "docker.io/justkey233/archisteamfarm:latest";
+        image = "docker.io/justkey/archisteamfarm:latest";
         ports = [ "1242:1242" ];
         volumes = [
           "/var/lib/asf/config:/app/config"
@@ -33,6 +34,7 @@
         ];
       };
 
+      # Free Games Claimer: Only target Epic Games & GOG
       free-games-claimer = {
         image = "docker.io/vogler/free-games-claimer:latest";
         volumes = [
@@ -40,6 +42,9 @@
         ];
         environment = {
           NOTIFY = "false";
+          PRIME_ENABLE = "false"; # Disables Amazon Prime Gaming
+          EPIC_ENABLE = "true";
+          GOG_ENABLE = "true";
         };
       };
     };
