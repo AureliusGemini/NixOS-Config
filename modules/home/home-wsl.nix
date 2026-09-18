@@ -24,6 +24,12 @@
         email = "93374856+AureliusGemini@users.noreply.github.com";
       };
     };
+    extraConfig = {
+      fetch.prune = true;
+      fetch.pruneTags = true;
+      init.defaultBranch = "main";
+      pull.ff = "only";
+    };
   };
 
   home.stateVersion = "26.05";
