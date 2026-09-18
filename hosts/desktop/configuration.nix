@@ -2,20 +2,22 @@
 
 {
   imports = [
-    ../../modules/nixos/podman.nix
+    ./hardware-configuration.nix
+    ./router-share.nix # <--- Modul router & share yang dipisah
   ];
 
+  # Nix Settings
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
   ];
-
   nixpkgs.config.allowUnfree = true;
   nix.settings.trusted-users = [
     "root"
     "@wheel"
   ];
 
+  # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -25,6 +27,8 @@
     options snd-hda-intel model=auto
   '';
 
+  # Networking Core
+  networking.hostName = "nixos";
   networking.networkmanager = {
     enable = true;
     settings = {
@@ -34,7 +38,8 @@
       };
     };
   };
-  networking.hostName = "nixos";
+  networking.nftables.enable = true;
+  networking.firewall.checkReversePath = false;
 
   # Enable Tailscale mesh network daemon
   services.tailscale.enable = true;
@@ -48,7 +53,7 @@
     };
   };
 
-  # Bluetooth set to Computer (0x000100) instead of Car Audio (0x000104)
+  # Hardware & Bluetooth
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
@@ -62,10 +67,9 @@
     };
   };
 
+  # Audio (Pipewire)
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
-
-  # Pipewire configuration
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -74,6 +78,23 @@
     jack.enable = true;
     wireplumber.enable = true;
   };
+
+  # Graphics Hardware Drivers
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+    extraPackages = with pkgs; [
+      libva
+      libva-vdpau-driver
+      libvdpau-va-gl
+    ];
+    extraPackages32 = with pkgs; [
+      libva
+      libva-vdpau-driver
+      libvdpau-va-gl
+    ];
+  };
+  services.xserver.videoDrivers = [ "amdgpu" ];
 
   # Steam & Gaming Integrations
   programs.gamemode.enable = true;
@@ -84,16 +105,20 @@
   };
   hardware.steam-hardware.enable = true;
 
+  programs.gamescope = {
+    enable = true;
+    capSysNice = true;
+  };
+
   # Desktop Environment (KDE Plasma 6 on SDDM)
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
-
   services.desktopManager.plasma6.enableQt5Integration = true;
   security.pam.services.sddm.enableKwallet = true;
 
+  # User & Localization
   time.timeZone = "Asia/Jakarta";
-
   security.sudo.wheelNeedsPassword = false;
   users.users.aurelius = {
     isNormalUser = true;
@@ -105,15 +130,10 @@
     description = "AureliusGemini";
   };
 
-  # Gamescope & System Utilities
-  programs.gamescope = {
-    enable = true;
-    capSysNice = true;
-  };
-
   # Dynamic linker helper for unpatched binaries / game tools
   programs.nix-ld.enable = true;
 
+  # System Packages
   environment.systemPackages = with pkgs; [
     git
     qpwgraph
@@ -133,6 +153,7 @@
     pciutils
   ];
 
+  # Flatpak Integration
   services.flatpak = {
     enable = true;
     update.onActivation = true;
@@ -149,12 +170,10 @@
   };
 
   virtualisation.waydroid.enable = true;
-  networking.nftables.enable = true;
-  networking.firewall.checkReversePath = false;
 
+  # Swap Configuration
   zramSwap.enable = true;
   zramSwap.memoryPercent = 50;
-
   swapDevices = [
     {
       device = "/var/lib/swapfile";
@@ -177,23 +196,6 @@
       "compress=zstd"
     ];
   };
-
-  # Graphics Hardware Drivers
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-    extraPackages = with pkgs; [
-      libva
-      libva-vdpau-driver
-      libvdpau-va-gl
-    ];
-    extraPackages32 = with pkgs; [
-      libva
-      libva-vdpau-driver
-      libvdpau-va-gl
-    ];
-  };
-  services.xserver.videoDrivers = [ "amdgpu" ];
 
   system.stateVersion = "26.05";
 }
