@@ -23,12 +23,16 @@
         name = "AureliusGemini";
         email = "93374856+AureliusGemini@users.noreply.github.com";
       };
-    };
-    extraConfig = {
-      fetch.prune = true;
-      fetch.pruneTags = true;
-      init.defaultBranch = "main";
-      pull.ff = "only";
+      fetch = {
+        prune = true;
+        pruneTags = true;
+      };
+      init = {
+        defaultBranch = "main";
+      };
+      pull = {
+        ff = "only";
+      };
     };
   };
 
