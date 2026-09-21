@@ -80,8 +80,10 @@ in
       "nix.serverPath" = "nixd";
       "nix.serverSettings" = {
         "nixd" = {
-          "formatting" = {
-            "command" = [ "nixfmt" ];
+          "options" = {
+            "formatting" = {
+              "command" = [ "nixfmt" ];
+            };
           };
         };
       };
