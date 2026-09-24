@@ -10,13 +10,13 @@
 
 stdenv.mkDerivation {
   pname = "obs-aitum-vertical";
-  version = "unstable";
+  version = "1.6.4";
 
   src = fetchFromGitHub {
     owner = "Aitum";
     repo = "obs-vertical-canvas";
-    rev = "c18f0c297cb3cb92b15746b147d3d2dbdae48ff2";
-    hash = "sha256-GlRyQl2XcH8PFndv9L6STqT+YJk4S+Sjz/q+6P0A5Og=";
+    rev = "1.6.4";
+    hash = "sha256-yQ6JvJ/fG4U6V9kU0Y+9zU3vM41G40dZ+237D2xN93o=";
     fetchSubmodules = true;
   };
 
