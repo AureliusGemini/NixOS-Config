@@ -63,14 +63,11 @@
 
       # --- n8n Workflow Automation ---
       n8n = {
-        image = "docker.n8n.io/n8nio/n8n:latest";
+        # Switch from docker.n8n.io/n8nio/n8n:latest -> docker.io/n8nio/n8n:latest
+        image = "docker.io/n8nio/n8n:latest"; 
         autoStart = true;
-        ports = [
-          "5678:5678" # n8n Web UI (Access via http://localhost:5678)
-        ];
-        volumes = [
-          "n8n-data:/home/node/.n8n"
-        ];
+        ports = [ "5678:5678" ];
+        volumes = [ "n8n-data:/home/node/.n8n" ];
         environment = {
           N8N_PORT = "5678";
           GENERIC_TIMEZONE = "Asia/Jakarta";
