@@ -41,11 +41,22 @@ if [ "$UPGRADE" = "true" ]; then
         --option connect-timeout 20
 fi
 
-# Stage all tracked and untracked config/script changes to clear dirty status
-TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
-echo "📝 Auto-committing working directory state at ${TIMESTAMP}..."
-git add -A
-git commit -m "auto-save: ${TIMESTAMP}" || echo "ℹ️ Nothing new to commit."
+# Interactive Git commit prompt
+if ! git diff-index --quiet HEAD -- 2>/dev/null || [ -n "$(git status --porcelain)" ]; then
+    echo "📝 Uncommitted changes detected."
+    git status -s
+    
+    read -rp "Enter commit message (Press Enter for auto-timestamp): " USER_COMMIT_MSG
+    
+    TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+    COMMIT_MSG="${USER_COMMIT_MSG:-auto-save: ${TIMESTAMP}}"
+    
+    echo "➕ Staging all changes..."
+    git add -A
+    git commit -m "$COMMIT_MSG"
+else
+    echo "ℹ️ Working tree clean, nothing to commit."
+fi
 
 echo "🚀 Rebuilding configuration ($FLAKE_TARGET) with mode: $MODE..."
 

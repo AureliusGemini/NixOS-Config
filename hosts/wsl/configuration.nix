@@ -21,6 +21,11 @@
 
   security.sudo.wheelNeedsPassword = false;
   
+  environment.sessionVariables = {
+    CONTAINER_HOST = "unix:///run/podman/podman.sock";
+    DOCKER_HOST = "unix:///run/podman/podman.sock";
+  };
+  
   # 1. Podman Configuration
   virtualisation.podman = {
     enable = true;
