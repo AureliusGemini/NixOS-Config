@@ -25,6 +25,7 @@
   virtualisation.podman = {
     enable = true;
     dockerCompat = true;
+    dockerSocket.enable = true;
     defaultNetwork.settings = {
       dns_enabled = true;
     };
@@ -54,11 +55,14 @@
         image = "ghcr.io/justarchinet/archisteamfarm:latest";
         autoStart = true;
         ports = [
-          "1242:1242" # ASF IPC Web Interface
+          "1242:1242"
         ];
         volumes = [
           "asf-config:/app/config"
         ];
+        environment = {
+          ASF_IPC_IPCADDRESSES="http://0.0.0.0:1242";
+        };
       };
 
       # --- n8n Workflow Automation ---
