@@ -24,12 +24,18 @@ Declarative NixOS + Home Manager setup for a desktop and WSL laptop workflow, in
 - **Host OS:** Windows 11 (WSL2)
 - **Guest System:** NixOS 26.11 (Zokor) on `6.18.33.2-microsoft-standard-WSL2`
 - **WSL Networking:** Mirrored mode (`eth0` host Wi-Fi, `eth2` Tailscale, `eth3` USB tethering)
-- **`%USERPROFILE%\\.wslconfig`:**
-  - `processors=6`
-  - `memory=6GB`
-  - `swap=4GB`
-  - `networkingMode=Mirrored`
-  - `sparseVhd=true`
+- **`%USERPROFILE%\\.wslconfig` (Optimized for Dev & Podman):**
+  ```ini
+  [wsl2]
+  processors=3          # Teroptimasi: Menggunakan 3 core fisik agar host Windows tidak choking/lag
+  memory=6GB            # Alokasi RAM seimbang untuk host 16GB
+  swap=4GB              # Buffer tambahan untuk container Podman berat
+  networkingMode=Mirrored
+  sparseVhd=true        # Otomatis menyusutkan file VHDX saat container/images dihapus
+
+  [experimental]
+  autoMemoryReclaim=gradual  # Manajemen RAM pintar tanpa merusak cache compiler VS Code
+  ```
 
 ---
 
@@ -87,7 +93,7 @@ sudo nixos-rebuild switch --flake .#nixos --option extra-substituters "file:///m
 1. Link laptop <-> desktop by direct Ethernet (or USB drive fallback)
 2. Transfer/share closures locally
 3. Rebuild desktop from local cache
-4. Use phone tethering only for lightweight metadata operations
+4. Use phone usb tethering only for lightweight metadata operations
 
 ---
 
@@ -97,15 +103,19 @@ sudo nixos-rebuild switch --flake .#nixos --option extra-substituters "file:///m
             [University Wi-Fi]
                     |
         +---------------------------+
+
         | Lenovo X380 (Windows+WSL) |
         | nixos-wsl cache producer  |
         +---------------------------+
+
              |                |
     (USB drive fallback)   (at home: direct RJ45)
+
              |                |
              +--------+-------+
                       |
         +---------------------------+
+
         | AMD Desktop (NixOS)       |
         | local cache consumer       |
         +---------------------------+
@@ -137,6 +147,11 @@ Phone USB tethering can attach to either machine for light git/metadata traffic.
 │   │   └── hardware-configuration.nix # Desktop hardware config
 │   └── wsl/
 │       └── configuration.nix          # NixOS-WSL host config
+├── scripts/
+│   ├── rebuild.sh                     # Build/apply helper script
+│   ├── update.sh                      # Update/apply helper script
+│   ├── sync-and-update.sh             # auto transfer and update from laptop cache to desktop
+│   └── apply-remote.sh                # Launcher untuk pull remote GitHub dan rebuild otomatis
 ├── modules/
 │   └── home/
 │       ├── home.nix                   # Desktop user Home Manager config
@@ -145,8 +160,5 @@ Phone USB tethering can attach to either machine for light git/metadata traffic.
 ├── pkgs/
 │   ├── kate-discord-rpc.nix           # Custom Kate Discord RPC derivation
 │   └── obs-aitum-vertical.nix         # Custom OBS Vertical Canvas derivation
-├── scripts/
-│   ├── rebuild.sh                     # Build/apply helper script
-│   └── update.sh                      # Update/apply helper script
 └── README.md
 ```
