@@ -18,12 +18,11 @@ if [ -z "$FLAKE_TARGET" ] || [ "$FLAKE_TARGET" = "auto" ]; then
 fi
 
 echo "🔄 Syncing Git working tree..."
+STASHED=false
 if ! git diff-index --quiet HEAD -- 2>/dev/null; then
-    echo "📦 Stashing local unstaged changes..."
+    echo "📦 Stashing local unstaged changes to pull clean remote..."
     git stash push -m "update.sh auto-stash $(date '+%Y-%m-%d %H:%M:%S')"
     STASHED=true
-else
-    STASHED=false
 fi
 
 echo "🔄 Pulling remote updates..."
@@ -41,28 +40,39 @@ if [ "$UPGRADE" = "true" ]; then
         --option connect-timeout 20
 fi
 
-# Interactive Git commit prompt
+# PERBAIKAN: Beri tahu Git tentang adanya file baru agar dibaca Nix Flake,
+# tetapi JANGAN di-commit dulu sebelum build terbukti sukses.
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    git add -N . || true
+fi
+
+echo "🚀 Rebuilding configuration ($FLAKE_TARGET) with mode: $MODE..."
+# Menjalankan rebuild terlebih dahulu
+sudo nixos-rebuild "$MODE" \
+    --flake ".#${FLAKE_TARGET}" \
+    --option download-attempts 10 \
+    --option connect-timeout 20
+
+# INTERACTIVE GIT COMMIT (Hanya berjalan jika REBUILD DI ATAS SUKSES)
 if ! git diff-index --quiet HEAD -- 2>/dev/null || [ -n "$(git status --porcelain)" ]; then
-    echo "📝 Uncommitted changes detected."
+    echo "📝 Configuration applied successfully. Uncommitted changes detected."
     git status -s
     
-    read -rp "Enter commit message (Press Enter for auto-timestamp): " USER_COMMIT_MSG
+    # Deteksi jika skrip berjalan di lingkungan non-interaktif (tty check)
+    if [ -t 0 ]; then
+        read -rp "Enter commit message (Press Enter for auto-timestamp): " USER_COMMIT_MSG
+    else
+        USER_COMMIT_MSG=""
+    fi
     
     TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
-    COMMIT_MSG="${USER_COMMIT_MSG:-auto-save: ${TIMESTAMP}}"
+    COMMIT_MSG="${USER_COMMIT_MSG:-system auto-update: ${TIMESTAMP} ($FLAKE_TARGET)}"
     
-    echo "➕ Staging all changes..."
+    echo "➕ Saving approved configuration to Git history..."
     git add -A
     git commit -m "$COMMIT_MSG"
 else
     echo "ℹ️ Working tree clean, nothing to commit."
 fi
 
-echo "🚀 Rebuilding configuration ($FLAKE_TARGET) with mode: $MODE..."
-
-sudo nixos-rebuild "$MODE" \
-    --flake ".#${FLAKE_TARGET}" \
-    --option download-attempts 10 \
-    --option connect-timeout 20
-
-echo "✅ Update complete!"
+echo "🎉 ✅ Update and deployment complete!"
