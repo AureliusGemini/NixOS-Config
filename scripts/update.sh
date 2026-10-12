@@ -8,6 +8,23 @@ MODE="${1:-switch}"      # switch | test | boot | build
 FLAKE_TARGET="${2:-}"   # nixos-wsl | nixos | auto
 UPGRADE="${3:-false}"    # true | false
 
+# Validate CLI arguments early
+case "$MODE" in
+    switch|test|boot|build) ;;
+    *)
+        echo "❌ Invalid mode: ${MODE}. Allowed: switch | test | boot | build"
+        exit 1
+        ;;
+esac
+
+case "$UPGRADE" in
+    true|false) ;;
+    *)
+        echo "❌ Invalid upgrade flag: ${UPGRADE}. Allowed: true | false"
+        exit 1
+        ;;
+esac
+
 # Auto-detect target host if not specified
 if [ -z "$FLAKE_TARGET" ] || [ "$FLAKE_TARGET" = "auto" ]; then
     if grep -q "WSL" /proc/version 2>/dev/null; then
@@ -16,6 +33,14 @@ if [ -z "$FLAKE_TARGET" ] || [ "$FLAKE_TARGET" = "auto" ]; then
         FLAKE_TARGET="nixos"
     fi
 fi
+
+case "$FLAKE_TARGET" in
+    nixos|nixos-wsl) ;;
+    *)
+        echo "❌ Invalid flake target: ${FLAKE_TARGET}. Allowed: nixos | nixos-wsl | auto"
+        exit 1
+        ;;
+esac
 
 echo "🔄 Syncing Git working tree..."
 if ! git diff-index --quiet HEAD -- 2>/dev/null; then

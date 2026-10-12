@@ -148,10 +148,10 @@ Phone USB tethering can attach to either machine for light git/metadata traffic.
 │   └── wsl/
 │       └── configuration.nix          # NixOS-WSL host config
 ├── scripts/
-│   ├── rebuild.sh                     # Build/apply helper script
 │   ├── update.sh                      # Update/apply helper script
-│   ├── sync-and-update.sh             # auto transfer and update from laptop cache to desktop
-│   └── apply-remote.sh                # Launcher untuk pull remote GitHub dan rebuild otomatis
+│   ├── export-cache.sh                # Build desktop closure and export cache locally
+│   ├── sync-desktop.sh                # Transfer cached closures from laptop to desktop
+│   └── apply-offline.sh               # Apply desktop rebuild in offline mode using local cache
 ├── modules/
 │   └── home/
 │       ├── home.nix                   # Desktop user Home Manager config
