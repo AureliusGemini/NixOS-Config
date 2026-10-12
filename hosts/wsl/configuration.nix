@@ -7,16 +7,28 @@
   nixpkgs.config.allowUnfree = true;
   nix.settings.trusted-users = [ "root" "@wheel" ];
 
+  # 1. WSL System Integration
   wsl = {
     enable = true;
     defaultUser = "aurelius";
   };
+  
   programs.nix-ld.enable = true;
 
+  # 2. Kernel Optimization for Coding Performance
+  # Menaikkan inotify limit agar VS Code tidak lag/high-CPU saat memindai file proyek besar
+  boot.kernel.sysctl = {
+    "fs.inotify.max_user_watches" = 524288;
+  };
+
+  # 3. User Accounts Configuration
   users.users.aurelius = {
     isNormalUser = true;
     extraGroups = [ "wheel" "podman" ];
     description = "AureliusGemini";
+    # UID/GID mapping krusial agar container rootless Podman berjalan efisien tanpa lag
+    subUidRanges = [{ startUid = 100000; count = 65536; }];
+    subGidRanges = [{ startUid = 100000; count = 65536; }];
   };
 
   security.sudo.wheelNeedsPassword = false;
@@ -26,7 +38,7 @@
     DOCKER_HOST = "unix:///run/podman/podman.sock";
   };
   
-  # 1. Podman Configuration
+  # 4. Podman Engine Configuration
   virtualisation.podman = {
     enable = true;
     dockerCompat = true;
@@ -36,7 +48,7 @@
     };
   };
 
-  # 2. Declarative OCI Container Services
+  # 5. Declarative OCI Container Services
   virtualisation.oci-containers = {
     backend = "podman";
     containers = {
@@ -51,7 +63,7 @@
         volumes = [
           "fgc-data:/fgc/data"
         ];
-        # Prime Gaming DISABLED: Executing Epic Games and GOG only
+        # Note: Jika CPU masih sering spike, ubah autoStart ke false agar container ini dijalankan manual saat ingin berkala saja.
         cmd = [ "bash" "-c" "node epic-games.js; node gog.js; echo 'Sleeping for 1 day'; sleep 1d" ];
       };
 
@@ -66,13 +78,12 @@
           "asf-config:/app/config"
         ];
         environment = {
-          ASF_IPC_IPCADDRESSES="http://0.0.0.0:1242";
+          ASF_IPC_IPCADDRESSES = "http://0.0.0.0:1242";
         };
       };
 
       # --- n8n Workflow Automation ---
       n8n = {
-        # Switch from docker.n8n.io/n8nio/n8n:latest -> docker.io/n8nio/n8n:latest
         image = "docker.io/n8nio/n8n:latest"; 
         autoStart = true;
         ports = [ "5678:5678" ];
@@ -86,6 +97,7 @@
     };
   };
 
+  # 6. Global System Packages
   programs.git.enable = true;
 
   environment.systemPackages = with pkgs; [
