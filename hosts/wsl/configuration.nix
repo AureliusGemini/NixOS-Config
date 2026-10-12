@@ -56,7 +56,7 @@
       # --- Vogler Free Games Claimer (FGC) ---
       fgc = {
         image = "ghcr.io/vogler/free-games-claimer:latest";
-        autoStart = true;
+        autoStart = false;
         ports = [
           "6080:6080" # noVNC Web UI (Access via http://localhost:6080)
         ];
@@ -64,7 +64,7 @@
           "fgc-data:/fgc/data"
         ];
         # Note: Jika CPU masih sering spike, ubah autoStart ke false agar container ini dijalankan manual saat ingin berkala saja.
-        cmd = [ "bash" "-c" "node epic-games.js; node gog.js; echo 'Sleeping for 1 day'; sleep 1d" ];
+        cmd = [ "bash" "-c" "node epic-games.js; node gog.js" ];
       };
 
       # --- ArchiSteamFarm (ASF) ---
