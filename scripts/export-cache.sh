@@ -22,24 +22,42 @@ if [ -z "$DEST_CACHE" ]; then
     DEST_CACHE="${INPUT_PATH:-$DEFAULT_TARGET}"
 fi
 
+# Pastikan path diubah ke absolut (sangat penting untuk WSL mount path)
+DEST_CACHE=$(realpath "$DEST_CACHE")
 echo "📦 Cache Target: ${DEST_CACHE}"
 mkdir -p "${DEST_CACHE}"
 
-# Clean git tree auto-commit check if dirty before building
+# PERBAIKAN GIT: Gunakan git stash alih-alih auto-commit paksa yang mengotori riwayat git
+STASHED=false
 if ! git diff-index --quiet HEAD --; then
-    TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
-    echo "⚠️ Git tree is dirty. Auto-committing changes prior to export build..."
-    git add .
-    git commit -m "wsl export auto-save: ${TIMESTAMP}" || true
+    echo "⚠️ Git tree is dirty. Stashing local changes temporarily to ensure clean build..."
+    git stash -u
+    STASHED=true
 fi
 
+# Trap untuk memastikan jika skrip error di tengah jalan, git stash dan symlink tetap dibersihkan
+cleanup() {
+    if [ "$STASHED" = true ]; then
+        echo "🔄 Restoring stashed local changes..."
+        git stash pop || echo "⚠️ Warning: Failed to pop stash automatically. Please check 'git stash list'."
+    fi
+    rm -f ./result
+}
+trap cleanup EXIT
+
 echo "🔨 Building Desktop top-level closure..."
+# Menggunakan bendera --no-link agar tidak membuat file symlink './result' yang mengotori git
 DESKTOP_PATH=$(nix build .#nixosConfigurations.nixos.config.system.build.toplevel \
     --print-out-paths \
+    --no-link \
     --option download-attempts 10 \
     --option connect-timeout 20)
 
 echo "💾 Exporting store paths to cache directory..."
 nix copy --to "file://${DEST_CACHE}" "$DESKTOP_PATH"
+
+# OPSIONAL TAPI DIALAMI: Salin juga flake inputs agar evaluasi offline berjalan mulus
+echo "📦 Copying flake inputs to cache..."
+nix flake archive --to "file://${DEST_CACHE}"
 
 echo "✅ Export finished successfully to: ${DEST_CACHE}"
