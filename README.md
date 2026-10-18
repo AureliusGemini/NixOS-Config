@@ -16,6 +16,7 @@ Declarative NixOS + Home Manager setup for a desktop and WSL laptop workflow, in
 - **Storage:**
   - OS SSD (240GB) with Btrfs (`/`, `/nix`, `/home`, `compress=zstd`)
   - Cached game/media pool via `bcache0` (480GB SSD + 1TB HDD)
+  - 500GB HDD (`sda`, Btrfs) mounted at `/mnt/homelab` for homelab services + Podman images (see `docs/HOMELAB.md`)
 
 ### Laptop Host (`nixosConfigurations.nixos-wsl`)
 - **Model:** Lenovo ThinkPad Yoga X380
@@ -24,12 +25,18 @@ Declarative NixOS + Home Manager setup for a desktop and WSL laptop workflow, in
 - **Host OS:** Windows 11 (WSL2)
 - **Guest System:** NixOS 26.11 (Zokor) on `6.18.33.2-microsoft-standard-WSL2`
 - **WSL Networking:** Mirrored mode (`eth0` host Wi-Fi, `eth2` Tailscale, `eth3` USB tethering)
-- **`%USERPROFILE%\\.wslconfig`:**
-  - `processors=6`
-  - `memory=6GB`
-  - `swap=4GB`
-  - `networkingMode=Mirrored`
-  - `sparseVhd=true`
+- **`%USERPROFILE%\\.wslconfig` (Optimized for Dev & Podman):**
+  ```ini
+  [wsl2]
+  processors=3          # Teroptimasi: Menggunakan 3 core fisik agar host Windows tidak choking/lag
+  memory=6GB            # Alokasi RAM seimbang untuk host 16GB
+  swap=4GB              # Buffer tambahan untuk container Podman berat
+  networkingMode=Mirrored
+  sparseVhd=true        # Otomatis menyusutkan file VHDX saat container/images dihapus
+
+  [experimental]
+  autoMemoryReclaim=gradual  # Manajemen RAM pintar tanpa merusak cache compiler VS Code
+  ```
 
 ---
 
@@ -54,10 +61,12 @@ nix copy --to "file:///mnt/d/nix-cache" .#nixosConfigurations.nixos.config.syste
 - static IP pair example: `192.168.50.1 <-> 192.168.50.2`
 - transfer closures over LAN via `ssh-ng://` (or serve via `nix-serve`)
 
-Example:
+Example (from the laptop, using the helper scripts in `scripts/`):
 ```bash
-nix copy --substituter-info --to "ssh-ng://aurelius@192.168.50.2" /mnt/d/nix-cache/*
+./scripts/export-cache.sh /mnt/d/nix-cache   # build + export closure and flake inputs
+./scripts/sync-desktop.sh                    # push the closure to the desktop over SSH
 ```
+The desktop's SSH key must be authorised: add the laptop's public key to `user.sshKeys` in `flake.nix`.
 
 #### Fallback: USB Drive
 - move cached closures by exFAT/Btrfs USB when cable sync is unavailable
@@ -87,7 +96,7 @@ sudo nixos-rebuild switch --flake .#nixos --option extra-substituters "file:///m
 1. Link laptop <-> desktop by direct Ethernet (or USB drive fallback)
 2. Transfer/share closures locally
 3. Rebuild desktop from local cache
-4. Use phone tethering only for lightweight metadata operations
+4. Use phone usb tethering only for lightweight metadata operations
 
 ---
 
@@ -97,15 +106,19 @@ sudo nixos-rebuild switch --flake .#nixos --option extra-substituters "file:///m
             [University Wi-Fi]
                     |
         +---------------------------+
+
         | Lenovo X380 (Windows+WSL) |
         | nixos-wsl cache producer  |
         +---------------------------+
+
              |                |
     (USB drive fallback)   (at home: direct RJ45)
+
              |                |
              +--------+-------+
                       |
         +---------------------------+
+
         | AMD Desktop (NixOS)       |
         | local cache consumer       |
         +---------------------------+
@@ -127,26 +140,38 @@ Phone USB tethering can attach to either machine for light git/metadata traffic.
 
 ## Repository Structure
 
+Features are toggles: a module under `modules/` does nothing until a host sets
+`my.<name>.enable = true;`. Hosts only import host-specific files and flip toggles.
+
 ```text
 ~/nixos-config/
-├── flake.nix                          # Flake inputs and outputs
-├── flake.lock                         # Locked dependency revisions
+├── flake.nix                     # inputs, `user` (single identity), mkHost, overlay
+├── flake.lock
 ├── hosts/
 │   ├── desktop/
-│   │   ├── configuration.nix          # Desktop NixOS config
-│   │   └── hardware-configuration.nix # Desktop hardware config
-│   └── wsl/
-│       └── configuration.nix          # NixOS-WSL host config
+│   │   ├── default.nix           # imports + feature toggles
+│   │   ├── boot.nix              # bootloader, module quirks
+│   │   ├── network.nix           # hostname, NetworkManager, Tailscale, SSH, firewall
+│   │   ├── storage.nix           # root btrfs options, /mnt/storage (bcache), swap
+│   │   ├── homelab.nix           # /mnt/homelab (sda) + Podman graphRoot
+│   │   └── hardware-configuration.nix
+│   └── wsl/default.nix           # WSL settings + toggles (podman, asf, n8n, fgc)
 ├── modules/
+│   ├── nixos/
+│   │   ├── default.nix           # imports everything below
+│   │   ├── core/                 # always on: nix, user, locale, base
+│   │   ├── features/             # audio bluetooth plasma gaming amd-gpu flatpak waydroid podman
+│   │   └── services/             # asf n8n fgc adguard
 │   └── home/
-│       ├── home.nix                   # Desktop user Home Manager config
-│       ├── home-wsl.nix               # WSL user Home Manager config
-│       └── kate.nix                   # Custom KDE Kate module
-├── pkgs/
-│   ├── kate-discord-rpc.nix           # Custom Kate Discord RPC derivation
-│   └── obs-aitum-vertical.nix         # Custom OBS Vertical Canvas derivation
-├── scripts/
-│   ├── rebuild.sh                     # Build/apply helper script
-│   └── update.sh                      # Update/apply helper script
-└── README.md
+│       ├── default.nix           # imports everything below
+│       ├── common/               # git (+gh), dev-tools, lazygit
+│       ├── features/             # obs vscode apps game-launchers kate
+│       ├── desktop.nix           # toggles for the desktop
+│       └── wsl.nix               # toggles for the laptop
+├── pkgs/                         # kate-discord-rpc, obs-aitum-vertical (overlay)
+├── scripts/                      # see scripts/README.md
+└── docs/HOMELAB.md               # one-time homelab/Podman/AdGuard setup
 ```
+
+Rebuild: `nh os switch` (or `sudo nixos-rebuild switch --flake .`); the host is picked
+from `networking.hostName` (`nixos` = desktop, `nixos-wsl` = laptop).

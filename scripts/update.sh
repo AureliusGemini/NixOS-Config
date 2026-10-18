@@ -1,57 +1,78 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-CONFIG_DIR="$HOME/nixos-config"
+CONFIG_DIR="${HOME}/nixos-config"
 cd "$CONFIG_DIR"
 
-echo "🔄 Flake Update Check"
-read -p "🌐 Do you want to update flake inputs? (y/N): " update_inputs
+MODE="${1:-switch}"      # switch | test | boot | build
+FLAKE_TARGET="${2:-}"   # nixos-wsl | nixos | auto
+UPGRADE="${3:-false}"    # true | false
 
-if [[ "$update_inputs" =~ ^[Yy]$ ]]; then
-    echo "⬇️ Updating flake inputs..."
-    nix flake update
-    echo "✨ Flake inputs updated successfully!"
-else
-    echo "⏭️ Skipping flake input updates."
-fi
-
-echo "📦 Staging configuration files..."
-git add .
-
-if ! git diff --staged --quiet; then
-    echo "📝 Uncommitted changes detected!"
-    read -p "✍️ Enter a commit message (or press Enter for auto-message): " commit_msg
-
-    if [ -z "$commit_msg" ]; then
-        commit_msg="System update & flake sync: $(date +'%Y-%m-%d %H:%M')"
+# Auto-detect target host if not specified
+if [ -z "$FLAKE_TARGET" ] || [ "$FLAKE_TARGET" = "auto" ]; then
+    if grep -q "WSL" /proc/version 2>/dev/null; then
+        FLAKE_TARGET="nixos-wsl"
+    else
+        FLAKE_TARGET="nixos"
     fi
-
-    git commit -m "$commit_msg"
-    echo "✅ Committed: $commit_msg"
 fi
 
-echo "🚀 Pre-building NixOS configuration (downloading packages)..."
-# Builds derivation safely with resilient network settings
-nix build .#nixosConfigurations.nixos.config.system.build.toplevel \
+echo "🔄 Syncing Git working tree..."
+STASHED=false
+if ! git diff-index --quiet HEAD -- 2>/dev/null; then
+    echo "📦 Stashing local unstaged changes to pull clean remote..."
+    git stash push -m "update.sh auto-stash $(date '+%Y-%m-%d %H:%M:%S')"
+    STASHED=true
+fi
+
+echo "🔄 Pulling remote updates..."
+git pull --rebase || echo "⚠️ Git pull failed or no remote configured, continuing..."
+
+if [ "$STASHED" = true ]; then
+    echo "📦 Restoring local changes from stash..."
+    git stash pop || echo "⚠️ Conflict while popping stash. Please review manually."
+fi
+
+if [ "$UPGRADE" = "true" ]; then
+    echo "⬆️ Updating flake inputs..."
+    nix flake update \
+        --option download-attempts 10 \
+        --option connect-timeout 20
+fi
+
+# PERBAIKAN: Beri tahu Git tentang adanya file baru agar dibaca Nix Flake,
+# tetapi JANGAN di-commit dulu sebelum build terbukti sukses.
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    git add -N . || true
+fi
+
+echo "🚀 Rebuilding configuration ($FLAKE_TARGET) with mode: $MODE..."
+# Menjalankan rebuild terlebih dahulu
+sudo nixos-rebuild "$MODE" \
+    --flake ".#${FLAKE_TARGET}" \
     --option download-attempts 10 \
     --option connect-timeout 20
 
-echo "⚡ Applying configuration and updating bootloader generations..."
-# Registers the profile generation and activates
-sudo nixos-rebuild switch --flake .#nixos --option substitute false
-
-# Clean up local result symlink
-rm -f ./result
-
-echo ""
-read -p "🗑️ Do you want to run Garbage Collection? (y/N): " run_gc
-
-if [[ "$run_gc" =~ ^[Yy]$ ]]; then
-    echo "🧹 Cleaning up old system generations..."
-    sudo nix-collect-garbage -d
-    echo "✨ System cleaned!"
+# INTERACTIVE GIT COMMIT (Hanya berjalan jika REBUILD DI ATAS SUKSES)
+if ! git diff-index --quiet HEAD -- 2>/dev/null || [ -n "$(git status --porcelain)" ]; then
+    echo "📝 Configuration applied successfully. Uncommitted changes detected."
+    git status -s
+    
+    # Deteksi jika skrip berjalan di lingkungan non-interaktif (tty check)
+    if [ -t 0 ]; then
+        read -rp "Enter commit message (Press Enter for auto-timestamp): " USER_COMMIT_MSG
+    else
+        USER_COMMIT_MSG=""
+    fi
+    
+    TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+    COMMIT_MSG="${USER_COMMIT_MSG:-system auto-update: ${TIMESTAMP} ($FLAKE_TARGET)}"
+    
+    echo "➕ Saving approved configuration to Git history..."
+    git add -A
+    git commit -m "$COMMIT_MSG"
 else
-    echo "⏭️ Skipping garbage collection."
+    echo "ℹ️ Working tree clean, nothing to commit."
 fi
 
-echo "✅ All tasks completed successfully!"
+echo "🎉 ✅ Update and deployment complete!"

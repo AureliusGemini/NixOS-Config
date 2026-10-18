@@ -1,12 +1,13 @@
 # ~/nixos-config/modules/home/kate.nix
+# Namespaced under `my.` so it can never clash with an upstream programs.kate.
 { config, lib, pkgs, ... }:
 
 with lib;
 
 let
-  cfg = config.programs.kate;
+  cfg = config.my.programs.kate;
 in {
-  options.programs.kate = {
+  options.my.programs.kate = {
     enable = mkEnableOption "Kate text editor configuration";
 
     package = mkPackageOption pkgs.kdePackages "kate" { };
