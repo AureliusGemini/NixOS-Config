@@ -27,7 +27,7 @@ DEST_CACHE=$(realpath "$DEST_CACHE")
 echo "📦 Cache Target: ${DEST_CACHE}"
 mkdir -p "${DEST_CACHE}"
 
-# PERBAIKAN GIT: Gunakan git stash alih-alih auto-commit paksa yang mengotori riwayat git
+# Gunakan git stash alih-alih auto-commit paksa yang mengotori riwayat git
 STASHED=false
 if ! git diff-index --quiet HEAD --; then
     echo "⚠️ Git tree is dirty. Stashing local changes temporarily to ensure clean build..."
@@ -35,28 +35,42 @@ if ! git diff-index --quiet HEAD --; then
     STASHED=true
 fi
 
-# Trap untuk memastikan jika skrip error di tengah jalan, git stash dan symlink tetap dibersihkan
+# Temp out-link untuk nh (nh butuh out-link; kita hapus di cleanup)
+OUT_LINK="$(mktemp -u /tmp/export-cache-result.XXXXXX)"
+
 cleanup() {
+    rm -f "$OUT_LINK" ./result
     if [ "$STASHED" = true ]; then
         echo "🔄 Restoring stashed local changes..."
         git stash pop || echo "⚠️ Warning: Failed to pop stash automatically. Please check 'git stash list'."
     fi
-    rm -f ./result
 }
 trap cleanup EXIT
 
 echo "🔨 Building Desktop top-level closure..."
-# Menggunakan bendera --no-link agar tidak membuat file symlink './result' yang mengotori git
-DESKTOP_PATH=$(nix build .#nixosConfigurations.nixos.config.system.build.toplevel \
-    --print-out-paths \
-    --no-link \
-    --option download-attempts 10 \
-    --option connect-timeout 20)
+if command -v nh >/dev/null 2>&1; then
+    # nh = progress/TUI (nom) + nicer output. Tidak pakai sudo; build saja.
+    nh os build "$CONFIG_DIR" \
+        --hostname nixos \
+        --out-link "$OUT_LINK" \
+        -- \
+        --option download-attempts 10 \
+        --option connect-timeout 20
+    DESKTOP_PATH=$(readlink -f "$OUT_LINK")
+else
+    echo "ℹ️ nh not found, falling back to plain nix build..."
+    DESKTOP_PATH=$(nix build .#nixosConfigurations.nixos.config.system.build.toplevel \
+        --print-out-paths \
+        --no-link \
+        --option download-attempts 10 \
+        --option connect-timeout 20)
+fi
 
 echo "💾 Exporting store paths to cache directory..."
+# nix copy sudah punya progress bar sendiri: [N/total copied (X/Y GiB)]
 nix copy --to "file://${DEST_CACHE}" "$DESKTOP_PATH"
 
-# OPSIONAL TAPI DIALAMI: Salin juga flake inputs agar evaluasi offline berjalan mulus
+# Salin juga flake inputs agar evaluasi offline berjalan mulus
 echo "📦 Copying flake inputs to cache..."
 nix flake archive --to "file://${DEST_CACHE}"
 
